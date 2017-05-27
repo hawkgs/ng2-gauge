@@ -2,6 +2,23 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  template: `<ng-gauge></ng-gauge>`
+  template: `<ng-gauge [max]="max" [input]="input"></ng-gauge>`
 })
-export class AppComponent {}
+export class AppComponent {
+  max: number = 9000;
+  input: number;
+
+  constructor() {
+    let target = Math.floor(Math.random() * this.max);
+
+    const simulate = () => {
+      for (let i = 0, t = 0; i < target; i++, t++) {
+        setTimeout(() => {
+          this.input = i;
+        }, t * 0.5);
+      }
+    };
+
+    simulate();
+  }
+}

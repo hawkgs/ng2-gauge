@@ -1,5 +1,11 @@
 <section class="gauge">
   <svg #scale [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
+    <rect #arrow
+      [attr.x]="center - 2"
+      [attr.y]="stroke + (stroke / 2)"
+      [attr.height]="center - (stroke + (stroke / 2))"
+      fill="orange" width="4" rx="2" ry="2">
+    </rect>
     <path [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" stroke="white" />
   </svg>
 </section>

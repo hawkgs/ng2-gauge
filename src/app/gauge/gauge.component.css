@@ -1,3 +1,7 @@
 section {
   width: 400px;
 }
+
+rect {
+  transform-origin: 0% 100%;
+}
