@@ -1,3 +1,5 @@
 <section class="gauge">
-  Gauge element
+  <svg #scale [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
+    <path [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" stroke="white" />
+  </svg>
 </section>
