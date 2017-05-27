@@ -38,12 +38,18 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this.viewBox = `0 0 ${width} ${width}`;
     this._radius = WIDTH / 2;
     this._center = width / 2;
-    this._end = (360 - this.start) + this.end;
+    this._end = this.end;
+
+    if (this.start > this.end) {
+      this._end += (360 - this.start);
+    } else {
+      this._end -= this.start;
+    }
   }
 
   ngAfterViewInit(): void {
-    this._renderer.setElementStyle(this.scale.nativeElement,
-    'transform', `rotate(-${360 - this.start}deg)`);
+    const angle = 360 - this.start;
+    this._renderer.setElementStyle(this.scale.nativeElement, 'transform', `rotate(-${angle}deg)`);
   }
 
   get arc(): string {
