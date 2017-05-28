@@ -1,0 +1,26 @@
+export interface Cartesian {
+  x: number;
+  y: number;
+}
+
+export interface Line {
+  from: Cartesian;
+  to: Cartesian;
+  color: string;
+}
+
+export interface Text {
+  coor: Cartesian;
+  text: string;
+}
+
+export interface Sector {
+  from: number;
+  to: number;
+  color: string;
+}
+
+export interface RenderSector {
+  path: string;
+  color: string;
+}

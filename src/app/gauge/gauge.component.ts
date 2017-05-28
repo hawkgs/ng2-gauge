@@ -3,43 +3,8 @@ import {
   AfterViewInit, Renderer, ElementRef
 } from '@angular/core';
 
-const WIDTH = 200;
-const STROKE = 5;
-const ARROW_Y = STROKE + (STROKE / 2) + 15;
-const SL_NORM = 3;
-const SL_MID_SEP = 7;
-const SL_SEP = 10;
-const TXT_MARGIN = 10;
-
-const DEF_START = 225;
-const DEF_END = 135;
-
-interface Cartesian {
-  x: number;
-  y: number;
-}
-
-interface Line {
-  from: Cartesian;
-  to: Cartesian;
-  color: string;
-}
-
-interface Text {
-  coor: Cartesian;
-  text: string;
-}
-
-interface Sector {
-  from: number;
-  to: number;
-  color: string;
-}
-
-interface RenderSector {
-  path: string;
-  color: string;
-}
+import { Sector, Line, Cartesian, RenderSector, Text } from './shared/gauge.interface';
+import * as Const from './shared/consts';
 
 @Component({
   selector: 'ng-gauge',
@@ -50,13 +15,14 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @ViewChild('gauge') gauge: ElementRef;
   @ViewChild('arrow') arrow: ElementRef;
 
-  @Input() start: number = DEF_START;
-  @Input() end: number = DEF_END;
+  @Input() start: number = Const.DEF_START;
+  @Input() end: number = Const.DEF_END;
   @Input() max: number;
   @Input() sectors: Sector[];
+  @Input() unit: string;
 
-  stroke: number = STROKE;
-  arrowY: number = ARROW_Y;
+  stroke: number = Const.STROKE;
+  arrowY: number = Const.ARROW_Y;
   viewBox: string;
   scaleLines: Line[];
   scaleText: Text[];
@@ -85,10 +51,10 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const width = WIDTH + STROKE;
+    const width = Const.WIDTH + Const.STROKE;
 
     this.viewBox = `0 0 ${width} ${width}`;
-    this.radius = WIDTH / 2;
+    this.radius = Const.WIDTH / 2;
     this.center = width / 2;
     this._end = this.end;
 
@@ -170,16 +136,16 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     const midSepPoint = (this._sepPoint / 2) * (this._end / this.max);
 
     for (let alpha = 0; alpha >= (-1) * this._end; alpha -= LINE_FREQ) {
-      let lineHeight = SL_NORM;
+      let lineHeight = Const.SL_NORM;
       const isSepReached = alpha % sepPoint === 0 || alpha - LINE_FREQ < (-1) * this._end;
 
       if (isSepReached) {
-        lineHeight = SL_SEP;
+        lineHeight = Const.SL_SEP;
       } else if (alpha % midSepPoint === 0) {
-        lineHeight = SL_MID_SEP;
+        lineHeight = Const.SL_MID_SEP;
       }
 
-      const higherEnd = this.center - STROKE - 2;
+      const higherEnd = this.center - Const.STROKE - 2;
       const lowerEnd = higherEnd - lineHeight;
 
       const alphaRad = Math.PI / 180 * (alpha + 180);
@@ -222,8 +188,8 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   private _addScaleText(sin, cos, lowerEnd, alpha: number): void {
-    let text = Math.round(((alpha) * (this.max / this._end))) * (-1);
-    let margin = TXT_MARGIN * 2;
+    let text = Math.round(alpha * (this.max / this._end)) * (-1);
+    let margin = Const.TXT_MARGIN * 2;
 
     if (this.max > 1000) {
       text /= this._sepPoint;
