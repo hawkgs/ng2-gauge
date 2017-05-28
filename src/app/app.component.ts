@@ -2,18 +2,18 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  template: `<ng-gauge [max]="max" [input]="input" [sectors]="sectors"></ng-gauge>`
+  template: `<ng-gauge [max]="max" [unit]="'rpm'" [showDigital]="true" [input]="input" [sectors]="sectors"></ng-gauge>`
 })
 export class AppComponent {
-  max = 525;
+  max = 9000;
   input: number;
-  sectors = [/*{
+  sectors = [{
     from: 7000,
-    to: 8500,
+    to: 7700,
     color: 'orange'
-  }, */{
-    from: 400,
-    to: 525,
+  }, {
+    from: 7700,
+    to: 9000,
     color: 'red'
   }];
 

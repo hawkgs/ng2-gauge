@@ -1,4 +1,9 @@
 <section class="gauge">
+  <p *ngIf="sepPoint >= 1000" class="multiplier">x{{sepPoint}} {{unit}}</p>
+  <div class="input-n-unit">
+    <p *ngIf="showDigital">{{input}}</p>
+    <p>{{unit}}</p>
+  </div>
   <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" />
     <path *ngFor="let arc of sectorArcs"

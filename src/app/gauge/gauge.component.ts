@@ -20,6 +20,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @Input() max: number;
   @Input() sectors: Sector[];
   @Input() unit: string;
+  @Input() showDigital: boolean;
 
   stroke: number = Const.STROKE;
   arrowY: number = Const.ARROW_Y;
@@ -30,9 +31,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
   radius: number;
   center: number;
+  sepPoint: number;
   private _end: number;
   private _input: number;
-  private _sepPoint: number;
 
   constructor(private _renderer: Renderer) {}
 
@@ -40,6 +41,10 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   set input(val: number) {
     this._input = val;
     this._updateArrowPos(val);
+  }
+
+  get input(): number {
+    return this._input;
   }
 
   get arc(): string {
@@ -57,6 +62,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this.radius = Const.WIDTH / 2;
     this.center = width / 2;
     this._end = this.end;
+    this.unit = this.unit.toLowerCase();
 
     if (this.start > this.end) {
       this._end += (360 - this.start);
@@ -66,7 +72,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
     this._updateArrowPos(this._input);
     this._calculateSectors();
-    this._sepPoint = this._determineScaleSeparationPoint();
+    this.sepPoint = this._determineScaleSeparationPoint();
     this._createScale();
   }
 
@@ -132,7 +138,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this.scaleText = [];
 
     const lines = this._end / Const.LINE_FREQ;
-    const separators = this.max / this._sepPoint;
+    const separators = this.max / this.sepPoint;
     const sepAt = Math.round(lines / separators);
 
     for (let alpha = 0, line = 0; alpha >= (-1) * this._end; alpha -= Const.LINE_FREQ, line++) {
@@ -192,12 +198,12 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     let margin = Const.TXT_MARGIN * 2;
 
     if (val !== this.max) {
-      val /= this._sepPoint;
-      val = Math.round(val) * this._sepPoint;
+      val /= this.sepPoint;
+      val = Math.round(val) * this.sepPoint;
     }
 
     if (this.max > 1000) {
-      val /= this._sepPoint;
+      val /= this.sepPoint;
       margin /= 2;
     }
 
