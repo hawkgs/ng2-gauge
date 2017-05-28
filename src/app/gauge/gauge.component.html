@@ -1,12 +1,15 @@
 <section class="gauge">
   <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
-    <path [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" stroke="white" />
+    <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" />
+    <path *ngFor="let arc of sectorArcs"
+      [attr.d]="arc.path" [attr.stroke]="arc.color"
+      [attr.stroke-width]="stroke" fill="none" />
     <line *ngFor="let line of scaleLines"
-      stroke-width="2" stroke="white"
+      stroke-width="2" [attr.stroke]="line.color || 'white'"
       [attr.x1]="line.from.x" [attr.y1]="line.from.y"
       [attr.x2]="line.to.x" [attr.y2]="line.to.y" />
     <text *ngFor="let text of scaleText"
-    dominant-baseline="central"
+      dominant-baseline="central"
       [attr.x]="text.coor.x" [attr.y]="text.coor.y"
       [attr.transform]="'rotate(' + gaugeRotation + ', ' + text.coor.x + ', ' + text.coor.y + ')'">
       {{text.text}}
@@ -14,7 +17,8 @@
     <rect #arrow
       [attr.x]="center - 2" [attr.y]="arrowY"
       [attr.height]="center - arrowY"
-      fill="orange" width="4" rx="2" ry="2">
+      width="4" rx="2" ry="2">
     </rect>
+    <circle [attr.cx]="center" [attr.cy]="center" r="8" />
   </svg>
 </section>

@@ -4,10 +4,7 @@ section {
 
 rect {
   transform-origin: 50% 100%;
-}
-
-path {
-  z-index: 1;
+  fill: orange;
 }
 
 text {
@@ -15,5 +12,13 @@ text {
   font-weight: bold;
   text-anchor: middle;
   font-size: 12px;
-  fill: white;
+  fill: #fff;
+}
+
+circle {
+  fill: #333;
+}
+
+path.main-arc {
+  stroke: #fff;
 }

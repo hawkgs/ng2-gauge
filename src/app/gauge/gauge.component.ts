@@ -22,11 +22,23 @@ interface Cartesian {
 interface Line {
   from: Cartesian;
   to: Cartesian;
+  color: string;
 }
 
 interface Text {
   coor: Cartesian;
   text: string;
+}
+
+interface Sector {
+  from: number;
+  to: number;
+  color: string;
+}
+
+interface RenderSector {
+  path: string;
+  color: string;
 }
 
 @Component({
@@ -41,11 +53,14 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @Input() start: number = DEF_START;
   @Input() end: number = DEF_END;
   @Input() max: number;
+  @Input() sectors: Sector[];
+
   stroke: number = STROKE;
   arrowY: number = ARROW_Y;
   viewBox: string;
   scaleLines: Line[];
   scaleText: Text[];
+  sectorArcs: RenderSector[];
 
   radius: number;
   center: number;
@@ -62,14 +77,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   get arc(): string {
-    const rads = (this._end - 90) * Math.PI / 180;
-    const largeArc = this._end <= 180 ? 0 : 1;
-    const arc = {
-      x: this.center + (this.radius * Math.cos(rads)),
-      y: this.center + (this.radius * Math.sin(rads))
-    };
-
-    return this._arcString(arc, this.radius, this.center, largeArc);
+    return this._arc(0, this._end);
   }
 
   get gaugeRotation(): number {
@@ -91,6 +99,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     }
 
     this._updateArrowPos(this._input);
+    this._calculateSectors();
     this._sepPoint = this._determineScaleSeparationPoint();
     this._createScale();
   }
@@ -99,8 +108,40 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this._rotateGauge();
   }
 
-  private _arcString(arc: Cartesian, r, c, largeArc: number): string {
-    return `M ${arc.x} ${arc.y} A ${r} ${r} 0 ${largeArc} 0 ${c} ${STROKE / 2}`;
+  private _arc(start, end: number): string {
+    const largeArc = end - start <= 180 ? 0 : 1;
+    const startCoor = this._getAngleCoor(start);
+    const endCoor = this._getAngleCoor(end);
+
+    return `M ${endCoor.x} ${endCoor.y} A ${this.radius} ${this.radius} 0 ${largeArc} 0 ${startCoor.x} ${startCoor.y}`;
+  }
+
+  private _getAngleCoor(degrees: number): Cartesian {
+    const rads = (degrees - 90) * Math.PI / 180;
+    return {
+      x: (this.radius * Math.cos(rads)) + this.center,
+      y: (this.radius * Math.sin(rads)) + this.center
+    };
+  }
+
+  private _calculateSectors(): void {
+    if (!this.sectors) {
+      return;
+    }
+
+    this.sectors = this.sectors.map((s: Sector) => {
+      const ratio = this._end / this.max;
+      s.from *= ratio;
+      s.to *= ratio;
+      return s;
+    });
+
+    this.sectorArcs = this.sectors.map((s: Sector) => {
+      return {
+        path: this._arc(s.from, s.to),
+        color: s.color
+      };
+    });
   }
 
   private _updateArrowPos(input: number): void {
@@ -144,15 +185,29 @@ export class GaugeComponent implements OnInit, AfterViewInit {
       const alphaRad = Math.PI / 180 * (alpha + 180);
       const sin = Math.sin(alphaRad);
       const cos = Math.cos(alphaRad);
+      const color = this._getLineColor(alpha);
 
-      this._addScaleLine(sin, cos, higherEnd, lowerEnd);
+      this._addScaleLine(sin, cos, higherEnd, lowerEnd, color);
       if (isSepReached) {
         this._addScaleText(sin, cos, lowerEnd, alpha);
       }
     }
   }
 
-  private _addScaleLine(sin, cos, higherEnd, lowerEnd: number): void {
+  private _getLineColor(alpha: number): string {
+    alpha *= (-1);
+    let color = '';
+
+    this.sectors.forEach((s: Sector) => {
+      if (s.from <= alpha && alpha <= s.to) {
+        color = s.color;
+      }
+    });
+
+    return color;
+  }
+
+  private _addScaleLine(sin, cos, higherEnd, lowerEnd: number, color: string): void {
     this.scaleLines.push({
       from: {
         x: sin * higherEnd + this.center,
@@ -161,7 +216,8 @@ export class GaugeComponent implements OnInit, AfterViewInit {
       to: {
         x: sin * lowerEnd + this.center,
         y: cos * lowerEnd + this.center
-      }
+      },
+      color
     });
   }
 
