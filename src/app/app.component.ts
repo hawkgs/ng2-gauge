@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `<ng-gauge [max]="max" [input]="input"></ng-gauge>`
 })
 export class AppComponent {
-  max = 9000;
+  max = 500;
   input: number;
 
   constructor() {

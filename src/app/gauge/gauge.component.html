@@ -12,9 +12,8 @@
       {{text.text}}
     </text>
     <rect #arrow
-      [attr.x]="center - 2"
-      [attr.y]="stroke + (stroke / 2) + 15"
-      [attr.height]="center - (stroke + (stroke / 2) + 15)"
+      [attr.x]="center - 2" [attr.y]="arrowY"
+      [attr.height]="center - arrowY"
       fill="orange" width="4" rx="2" ry="2">
     </rect>
   </svg>

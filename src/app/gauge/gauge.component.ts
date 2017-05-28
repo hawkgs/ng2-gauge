@@ -5,7 +5,7 @@ import {
 
 const WIDTH = 200;
 const STROKE = 5;
-const ARROW_LEN = 40;
+const ARROW_Y = STROKE + (STROKE / 2) + 15;
 const SL_NORM = 3;
 const SL_MID_SEP = 7;
 const SL_SEP = 10;
@@ -42,7 +42,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @Input() end: number = DEF_END;
   @Input() max: number;
   stroke: number = STROKE;
-  arrowLen: number = ARROW_LEN;
+  arrowY: number = ARROW_Y;
   viewBox: string;
   scaleLines: Line[];
   scaleText: Text[];
@@ -123,32 +123,30 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   private _createScale(): void {
     this.scaleLines = [];
     this.scaleText = [];
+
+    const LINE_FREQ = 3;
     const sepPoint = this._sepPoint * (this._end / this.max);
+    const midSepPoint = (this._sepPoint / 2) * (this._end / this.max);
 
-    for (let alpha = 180; alpha >= 180 - this._end; alpha -= 3) {
+    for (let alpha = 0; alpha >= (-1) * this._end; alpha -= LINE_FREQ) {
       let lineHeight = SL_NORM;
-      let reachedSep: boolean;
+      const isSepReached = alpha % sepPoint === 0 || alpha - LINE_FREQ < (-1) * this._end;
 
-      // needs improvement
-      switch (0) {
-        case alpha % sepPoint:
-          reachedSep = true;
-          lineHeight = SL_SEP;
-          break;
-        case alpha % (sepPoint / 2):
-          lineHeight = SL_MID_SEP;
-          break;
+      if (isSepReached) {
+        lineHeight = SL_SEP;
+      } else if (alpha % midSepPoint === 0) {
+        lineHeight = SL_MID_SEP;
       }
 
       const higherEnd = this.center - STROKE - 2;
       const lowerEnd = higherEnd - lineHeight;
 
-      const alphaRad = Math.PI / 180 * alpha;
+      const alphaRad = Math.PI / 180 * (alpha + 180);
       const sin = Math.sin(alphaRad);
       const cos = Math.cos(alphaRad);
 
       this._addScaleLine(sin, cos, higherEnd, lowerEnd);
-      if (reachedSep) {
+      if (isSepReached) {
         this._addScaleText(sin, cos, lowerEnd, alpha);
       }
     }
@@ -168,7 +166,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   private _addScaleText(sin, cos, lowerEnd, alpha: number): void {
-    let text = Math.round(((alpha - 180) * (this.max / this._end))) * (-1);
+    let text = Math.round(((alpha) * (this.max / this._end))) * (-1);
     let margin = TXT_MARGIN * 2;
 
     if (this.max > 1000) {
