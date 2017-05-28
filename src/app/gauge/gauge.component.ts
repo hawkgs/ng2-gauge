@@ -131,17 +131,17 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this.scaleLines = [];
     this.scaleText = [];
 
-    const LINE_FREQ = 3;
-    const sepPoint = this._sepPoint * (this._end / this.max);
-    const midSepPoint = (this._sepPoint / 2) * (this._end / this.max);
+    const lines = this._end / Const.LINE_FREQ;
+    const separators = this.max / this._sepPoint;
+    const sepAt = Math.round(lines / separators);
 
-    for (let alpha = 0; alpha >= (-1) * this._end; alpha -= LINE_FREQ) {
+    for (let alpha = 0, line = 0; alpha >= (-1) * this._end; alpha -= Const.LINE_FREQ, line++) {
       let lineHeight = Const.SL_NORM;
-      const isSepReached = alpha % sepPoint === 0 || alpha - LINE_FREQ < (-1) * this._end;
+      const isSepReached = line % sepAt === 0 || alpha - Const.LINE_FREQ < (-1) * this._end;
 
       if (isSepReached) {
         lineHeight = Const.SL_SEP;
-      } else if (alpha % midSepPoint === 0) {
+      } else if (line % (sepAt / 2) === 0) {
         lineHeight = Const.SL_MID_SEP;
       }
 
@@ -162,7 +162,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
   private _getLineColor(alpha: number): string {
     alpha *= (-1);
-    let color = '';
+    let color: string;
 
     this.sectors.forEach((s: Sector) => {
       if (s.from <= alpha && alpha <= s.to) {
@@ -188,16 +188,21 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   private _addScaleText(sin, cos, lowerEnd, alpha: number): void {
-    let text = Math.round(alpha * (this.max / this._end)) * (-1);
+    let val = Math.round(alpha * (this.max / this._end)) * (-1);
     let margin = Const.TXT_MARGIN * 2;
 
+    if (val !== this.max) {
+      val /= this._sepPoint;
+      val = Math.round(val) * this._sepPoint;
+    }
+
     if (this.max > 1000) {
-      text /= this._sepPoint;
+      val /= this._sepPoint;
       margin /= 2;
     }
 
     this.scaleText.push({
-      text: text.toString(),
+      text: val.toString(),
       coor: {
         x: sin * (lowerEnd - margin) + this.center,
         y: cos * (lowerEnd - margin) + this.center

@@ -5,15 +5,15 @@ import { Component } from '@angular/core';
   template: `<ng-gauge [max]="max" [input]="input" [sectors]="sectors"></ng-gauge>`
 })
 export class AppComponent {
-  max = 10000;
+  max = 525;
   input: number;
-  sectors = [{
+  sectors = [/*{
     from: 7000,
     to: 8500,
     color: 'orange'
-  }, {
-    from: 8500,
-    to: 10000,
+  }, */{
+    from: 400,
+    to: 525,
     color: 'red'
   }];
 
