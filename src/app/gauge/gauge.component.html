@@ -1,5 +1,5 @@
 <section class="gauge">
-  <svg #scale [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
+  <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <rect #arrow
       [attr.x]="center - 2"
       [attr.y]="stroke + (stroke / 2)"
@@ -7,5 +7,10 @@
       fill="orange" width="4" rx="2" ry="2">
     </rect>
     <path [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" stroke="white" />
+    <line
+      *ngFor="let line of scale"
+      stroke-width="2" stroke="white"
+      [attr.x1]="line.from.x" [attr.y1]="line.from.y"
+      [attr.x2]="line.to.x" [attr.y2]="line.to.y" />
   </svg>
 </section>

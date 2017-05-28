@@ -3,5 +3,9 @@ section {
 }
 
 rect {
-  transform-origin: 0% 100%;
+  transform-origin: 50% 100%;
+}
+
+path {
+  z-index: 1;
 }

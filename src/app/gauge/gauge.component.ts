@@ -4,15 +4,23 @@ import {
 } from '@angular/core';
 
 const WIDTH = 200;
-const STROKE = 15;
+const STROKE = 5;
 const ARROW_LEN = 40;
+const SL_NORM = 3;
+const SL_MID_SEP = 7;
+const SL_SEP = 10;
 
 const DEF_START = 225;
 const DEF_END = 135;
 
-interface IArc {
+interface Cartesian {
   x: number;
   y: number;
+}
+
+interface Line {
+  from: Cartesian;
+  to: Cartesian;
 }
 
 @Component({
@@ -21,7 +29,7 @@ interface IArc {
   styleUrls: ['./gauge.component.css']
 })
 export class GaugeComponent implements OnInit, AfterViewInit {
-  @ViewChild('scale') scale: ElementRef;
+  @ViewChild('gauge') gauge: ElementRef;
   @ViewChild('arrow') arrow: ElementRef;
 
   @Input() start: number = DEF_START;
@@ -30,11 +38,13 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   stroke: number = STROKE;
   arrowLen: number = ARROW_LEN;
   viewBox: string;
+  scale: Line[];
 
   radius: number;
   center: number;
   private _end: number;
   private _input: number;
+  private _sepPoint: number;
 
   constructor(private _renderer: Renderer) {}
 
@@ -68,20 +78,70 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     } else {
       this._end -= this.start;
     }
+
     this._updateArrowPos(this._input);
+    this._sepPoint = this._determineScaleSeparationPoint();
+    this._createScale();
   }
 
   ngAfterViewInit(): void {
-    const angle = 360 - this.start;
-    this._renderer.setElementStyle(this.scale.nativeElement, 'transform', `rotate(-${angle}deg)`);
+    this._rotateGauge();
   }
 
-  private _arcString(arc: IArc, r, c, largeArc: number): string {
+  private _arcString(arc: Cartesian, r, c, largeArc: number): string {
     return `M ${arc.x} ${arc.y} A ${r} ${r} 0 ${largeArc} 0 ${c} ${STROKE / 2}`;
   }
 
-  private _updateArrowPos(input: number) {
+  private _updateArrowPos(input: number): void {
     const pos = (this._end / this.max) * input;
     this._renderer.setElementStyle(this.arrow.nativeElement, 'transform', `rotate(${pos}deg)`);
+  }
+
+  private _rotateGauge(): void {
+    const angle = 360 - this.start;
+    this._renderer.setElementStyle(this.gauge.nativeElement, 'transform', `rotate(-${angle}deg)`);
+  }
+
+  private _determineScaleSeparationPoint(separateAt = 10): number {
+    if (this.max / separateAt > 10) {
+      return this._determineScaleSeparationPoint(separateAt * 10);
+    }
+    return separateAt;
+  }
+
+  private _createScale(): void {
+    this.scale = [];
+    const sepPoint = this._sepPoint * (this._end / this.max);
+
+    for (let alpha = 180; alpha >= 180 - this._end; alpha -= 3) {
+      let lineHeight = SL_NORM;
+
+      switch (0) {
+        case alpha % sepPoint:
+          lineHeight = SL_SEP;
+          break;
+        case alpha % (sepPoint / 2):
+          lineHeight = SL_MID_SEP;
+          break;
+      }
+
+      const higherEnd = this.center - STROKE - 2;
+      const lowerEnd = higherEnd - lineHeight;
+
+      const alphaRad = Math.PI / 180 * alpha;
+      const sin = Math.sin(alphaRad);
+      const cos = Math.cos(alphaRad);
+
+      this.scale.push({
+        from: {
+          x: sin * higherEnd + this.center,
+          y: cos * higherEnd + this.center
+        },
+        to: {
+          x: sin * lowerEnd + this.center,
+          y: cos * lowerEnd + this.center
+        }
+      });
+    }
   }
 }
