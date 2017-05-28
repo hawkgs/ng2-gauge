@@ -5,11 +5,11 @@ import { Component } from '@angular/core';
   template: `<ng-gauge [max]="max" [input]="input"></ng-gauge>`
 })
 export class AppComponent {
-  max: number = 9000;
+  max = 9000;
   input: number;
 
   constructor() {
-    let target = Math.floor(Math.random() * this.max);
+    const target = Math.floor(Math.random() * this.max);
 
     const simulate = () => {
       for (let i = 0, t = 0; i < target; i++, t++) {

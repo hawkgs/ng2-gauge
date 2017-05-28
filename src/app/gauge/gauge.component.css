@@ -9,3 +9,11 @@ rect {
 path {
   z-index: 1;
 }
+
+text {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  text-anchor: middle;
+  font-size: 12px;
+  fill: white;
+}

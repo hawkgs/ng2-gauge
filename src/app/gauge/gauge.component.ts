@@ -9,6 +9,7 @@ const ARROW_LEN = 40;
 const SL_NORM = 3;
 const SL_MID_SEP = 7;
 const SL_SEP = 10;
+const TXT_MARGIN = 10;
 
 const DEF_START = 225;
 const DEF_END = 135;
@@ -21,6 +22,11 @@ interface Cartesian {
 interface Line {
   from: Cartesian;
   to: Cartesian;
+}
+
+interface Text {
+  coor: Cartesian;
+  text: string;
 }
 
 @Component({
@@ -38,7 +44,8 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   stroke: number = STROKE;
   arrowLen: number = ARROW_LEN;
   viewBox: string;
-  scale: Line[];
+  scaleLines: Line[];
+  scaleText: Text[];
 
   radius: number;
   center: number;
@@ -63,6 +70,10 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     };
 
     return this._arcString(arc, this.radius, this.center, largeArc);
+  }
+
+  get gaugeRotation(): number {
+    return this._end - this.end;
   }
 
   ngOnInit(): void {
@@ -110,14 +121,18 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   private _createScale(): void {
-    this.scale = [];
+    this.scaleLines = [];
+    this.scaleText = [];
     const sepPoint = this._sepPoint * (this._end / this.max);
 
     for (let alpha = 180; alpha >= 180 - this._end; alpha -= 3) {
       let lineHeight = SL_NORM;
+      let reachedSep: boolean;
 
+      // needs improvement
       switch (0) {
         case alpha % sepPoint:
+          reachedSep = true;
           lineHeight = SL_SEP;
           break;
         case alpha % (sepPoint / 2):
@@ -132,16 +147,41 @@ export class GaugeComponent implements OnInit, AfterViewInit {
       const sin = Math.sin(alphaRad);
       const cos = Math.cos(alphaRad);
 
-      this.scale.push({
-        from: {
-          x: sin * higherEnd + this.center,
-          y: cos * higherEnd + this.center
-        },
-        to: {
-          x: sin * lowerEnd + this.center,
-          y: cos * lowerEnd + this.center
-        }
-      });
+      this._addScaleLine(sin, cos, higherEnd, lowerEnd);
+      if (reachedSep) {
+        this._addScaleText(sin, cos, lowerEnd, alpha);
+      }
     }
+  }
+
+  private _addScaleLine(sin, cos, higherEnd, lowerEnd: number): void {
+    this.scaleLines.push({
+      from: {
+        x: sin * higherEnd + this.center,
+        y: cos * higherEnd + this.center
+      },
+      to: {
+        x: sin * lowerEnd + this.center,
+        y: cos * lowerEnd + this.center
+      }
+    });
+  }
+
+  private _addScaleText(sin, cos, lowerEnd, alpha: number): void {
+    let text = Math.round(((alpha - 180) * (this.max / this._end))) * (-1);
+    let margin = TXT_MARGIN * 2;
+
+    if (this.max > 1000) {
+      text /= this._sepPoint;
+      margin /= 2;
+    }
+
+    this.scaleText.push({
+      text: text.toString(),
+      coor: {
+        x: sin * (lowerEnd - margin) + this.center,
+        y: cos * (lowerEnd - margin) + this.center
+      }
+    });
   }
 }
