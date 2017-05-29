@@ -21,6 +21,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @Input() sectors: Sector[];
   @Input() unit: string;
   @Input() showDigital: boolean;
+  @Input() light: number;
 
   stroke: number = Const.STROKE;
   arrowY: number = Const.ARROW_Y;

@@ -1,9 +1,13 @@
 <section class="gauge">
-  <p *ngIf="sepPoint >= 1000" class="multiplier">x{{sepPoint}} {{unit}}</p>
-  <div class="input-n-unit">
-    <p *ngIf="showDigital">{{input}}</p>
-    <p>{{unit}}</p>
-  </div>
+  <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
+    <circle *ngIf="light"
+      class="red-light" [class.on]="input >= light"
+      [attr.cx]="center" cy="55" r="10">
+    </circle>
+    <text *ngIf="sepPoint >= 1000" class="multiplier" [attr.x]="center" y="80">x{{sepPoint}} {{unit}}</text>
+    <text *ngIf="showDigital" class="digital" [attr.x]="center" y="145">{{input}}</text>
+    <text class="unit" [attr.x]="center" y="155">{{unit}}</text>
+  </svg>
   <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" />
     <path *ngFor="let arc of sectorArcs"
@@ -14,16 +18,17 @@
       [attr.x1]="line.from.x" [attr.y1]="line.from.y"
       [attr.x2]="line.to.x" [attr.y2]="line.to.y" />
     <text *ngFor="let text of scaleText"
+      class="text-val"
       dominant-baseline="central"
       [attr.x]="text.coor.x" [attr.y]="text.coor.y"
       [attr.transform]="'rotate(' + gaugeRotation + ', ' + text.coor.x + ', ' + text.coor.y + ')'">
       {{text.text}}
     </text>
-    <rect #arrow
+    <rect #arrow class="arrow"
       [attr.x]="center - 2" [attr.y]="arrowY"
       [attr.height]="center - arrowY"
       width="4" rx="2" ry="2">
     </rect>
-    <circle [attr.cx]="center" [attr.cy]="center" r="8" />
+    <circle class="arrow-pin" [attr.cx]="center" [attr.cy]="center" r="8" />
   </svg>
 </section>
