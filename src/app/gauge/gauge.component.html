@@ -4,7 +4,7 @@
       class="red-light" [class.on]="input >= light"
       [attr.cx]="center" cy="55" r="10">
     </circle>
-    <text *ngIf="sepPoint >= 1000" class="multiplier" [attr.x]="center" y="80">x{{sepPoint}} {{unit}}</text>
+    <text *ngIf="scaleFactor" class="factor" [attr.x]="center" y="80">x{{scaleFactor}} {{unit}}</text>
     <text *ngIf="showDigital" class="digital" [attr.x]="center" y="145">{{input}}</text>
     <text class="unit" [attr.x]="center" y="155">{{unit}}</text>
   </svg>
@@ -17,12 +17,12 @@
       stroke-width="2" [attr.stroke]="line.color || 'white'"
       [attr.x1]="line.from.x" [attr.y1]="line.from.y"
       [attr.x2]="line.to.x" [attr.y2]="line.to.y" />
-    <text *ngFor="let text of scaleText"
+    <text *ngFor="let val of scaleValues"
       class="text-val"
       dominant-baseline="central"
-      [attr.x]="text.coor.x" [attr.y]="text.coor.y"
-      [attr.transform]="'rotate(' + gaugeRotation + ', ' + text.coor.x + ', ' + text.coor.y + ')'">
-      {{text.text}}
+      [attr.x]="val.coor.x" [attr.y]="val.coor.y"
+      [attr.transform]="'rotate(' + gaugeRotation + ', ' + val.coor.x + ', ' + val.coor.y + ')'">
+      {{val.text}}
     </text>
     <rect #arrow class="arrow"
       [attr.x]="center - 2" [attr.y]="arrowY"

@@ -3,7 +3,7 @@ import {
   AfterViewInit, Renderer, ElementRef
 } from '@angular/core';
 
-import { Sector, Line, Cartesian, RenderSector, Text } from './shared/gauge.interface';
+import { Sector, Line, Cartesian, RenderSector, Value } from './shared/gauge.interface';
 import * as Const from './shared/consts';
 
 @Component({
@@ -22,17 +22,18 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @Input() unit: string;
   @Input() showDigital: boolean;
   @Input() light: number;
+  @Input() factor: number;
 
   stroke: number = Const.STROKE;
   arrowY: number = Const.ARROW_Y;
   viewBox: string;
   scaleLines: Line[];
-  scaleText: Text[];
+  scaleValues: Value[];
   sectorArcs: RenderSector[];
 
   radius: number;
   center: number;
-  sepPoint: number;
+  scaleFactor: number;
   private _end: number;
   private _input: number;
 
@@ -63,7 +64,6 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this.radius = Const.WIDTH / 2;
     this.center = width / 2;
     this._end = this.end;
-    this.unit = this.unit.toLowerCase();
 
     if (this.start > this.end) {
       this._end += (360 - this.start);
@@ -73,7 +73,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
     this._updateArrowPos(this._input);
     this._calculateSectors();
-    this.sepPoint = this._determineScaleSeparationPoint();
+    this.scaleFactor = this.factor || this._determineScaleFactor();
     this._createScale();
   }
 
@@ -127,28 +127,44 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this._renderer.setElementStyle(this.gauge.nativeElement, 'transform', `rotate(-${angle}deg)`);
   }
 
-  private _determineScaleSeparationPoint(separateAt = 10): number {
-    if (this.max / separateAt > 10) {
-      return this._determineScaleSeparationPoint(separateAt * 10);
+  private _determineScaleFactor(factor = 10): number {
+    if (this.max / factor > 10) {
+      return this._determineScaleFactor(factor * 10);
     }
-    return separateAt;
+    return factor;
+  }
+
+  private _determineScaleFactorSeparator(): { separateAtAngle: number, lineFrequency: number } {
+    const separators = this.max / this.scaleFactor;
+    const separateAtAngle = this._end / separators;
+    let lineFrequency: number;
+
+    if (separateAtAngle % 1 !== 0) {
+      lineFrequency = separateAtAngle;
+    } else {
+      lineFrequency = Const.INIT_LINE_FREQ * 2;
+      for (lineFrequency; lineFrequency <= separateAtAngle; lineFrequency++) {
+        if (separateAtAngle % lineFrequency === 0) {
+          break;
+        }
+      }
+    }
+
+    return { separateAtAngle, lineFrequency };
   }
 
   private _createScale(): void {
     this.scaleLines = [];
-    this.scaleText = [];
+    this.scaleValues = [];
+    const { separateAtAngle, lineFrequency } = this._determineScaleFactorSeparator();
 
-    const lines = this._end / Const.LINE_FREQ;
-    const separators = this.max / this.sepPoint;
-    const sepAt = Math.round(lines / separators);
-
-    for (let alpha = 0, line = 0; alpha >= (-1) * this._end; alpha -= Const.LINE_FREQ, line++) {
+    for (let alpha = 0; alpha >= (-1) * this._end; alpha -= lineFrequency / 2) {
       let lineHeight = Const.SL_NORM;
-      const isSepReached = line % sepAt === 0 || alpha - Const.LINE_FREQ < (-1) * this._end;
+      const isSepReached = alpha % separateAtAngle === 0;
 
       if (isSepReached) {
         lineHeight = Const.SL_SEP;
-      } else if (line % (sepAt / 2) === 0) {
+      } else if (alpha % (separateAtAngle / 2) === 0) {
         lineHeight = Const.SL_MID_SEP;
       }
 
@@ -158,24 +174,26 @@ export class GaugeComponent implements OnInit, AfterViewInit {
       const alphaRad = Math.PI / 180 * (alpha + 180);
       const sin = Math.sin(alphaRad);
       const cos = Math.cos(alphaRad);
-      const color = this._getLineColor(alpha);
+      const color = this._getScaleLineColor(alpha);
 
       this._addScaleLine(sin, cos, higherEnd, lowerEnd, color);
       if (isSepReached) {
-        this._addScaleText(sin, cos, lowerEnd, alpha);
+        this._addScaleValue(sin, cos, lowerEnd, alpha);
       }
     }
   }
 
-  private _getLineColor(alpha: number): string {
+  private _getScaleLineColor(alpha: number): string {
     alpha *= (-1);
     let color: string;
 
-    this.sectors.forEach((s: Sector) => {
-      if (s.from <= alpha && alpha <= s.to) {
-        color = s.color;
-      }
-    });
+    if (this.sectors) {
+      this.sectors.forEach((s: Sector) => {
+        if (s.from <= alpha && alpha <= s.to) {
+          color = s.color;
+        }
+      });
+    }
 
     return color;
   }
@@ -194,21 +212,16 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private _addScaleText(sin, cos, lowerEnd, alpha: number): void {
+  private _addScaleValue(sin, cos, lowerEnd, alpha: number): void {
     let val = Math.round(alpha * (this.max / this._end)) * (-1);
     let margin = Const.TXT_MARGIN * 2;
 
-    if (val !== this.max) {
-      val /= this.sepPoint;
-      val = Math.round(val) * this.sepPoint;
-    }
-
     if (this.max > 1000) {
-      val /= this.sepPoint;
+      val /= this.scaleFactor;
       margin /= 2;
     }
 
-    this.scaleText.push({
+    this.scaleValues.push({
       text: val.toString(),
       coor: {
         x: sin * (lowerEnd - margin) + this.center,

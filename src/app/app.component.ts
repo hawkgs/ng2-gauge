@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `<ng-gauge [max]="max" [unit]="'rpm'" [showDigital]="true" [input]="input" [sectors]="sectors" [light]="7000"></ng-gauge>`
 })
 export class AppComponent {
-  max = 9000;
+  max = 10000;
   input: number;
   sectors = [{
     from: 7000,
@@ -22,7 +22,7 @@ export class AppComponent {
     const target = 7500;
 
     const simulate = () => {
-      for (let i = 0, t = 0; i < target; i += 50, t++) {
+      for (let i = 0, t = 0; i < target; i += 15, t++) {
         setTimeout(() => {
           this.input = i;
         }, t * 0.5);

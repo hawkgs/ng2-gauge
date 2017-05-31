@@ -9,7 +9,7 @@ export interface Line {
   color: string;
 }
 
-export interface Text {
+export interface Value {
   coor: Cartesian;
   text: string;
 }
