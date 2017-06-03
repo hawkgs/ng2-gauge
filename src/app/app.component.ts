@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `<ng-gauge [max]="max" [unit]="'rpm'" [showDigital]="true" [input]="input"></ng-gauge>`
 })
 export class AppComponent {
-  max = 140;
+  max = 300;
   input: number;
   sectors = [{
     from: 7000,

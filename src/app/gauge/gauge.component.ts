@@ -160,15 +160,21 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     const { separateAtAngle, lineFrequency } = this._determineScaleFactorSeparator();
     const accumWith = lineFrequency / 2;
     const isAboveSuitableFactor = this.max / this.scaleFactor > 10;
+    let placedVals = 0;
+
+    const isSepReached = (alpha: number, separateAt: number): boolean => {
+      return alpha % separateAt === 0 || // For integers (4 % 2 = 0)
+        Math.round(Math.abs(alpha % separateAt)) === Math.round(separateAt); // For floats (4 % 2.001 = 1.999)
+    };
 
     for (let alpha = 0; alpha >= (-1) * this._end; alpha -= accumWith) {
       let lineHeight = Const.SL_NORM;
-      const isSepReached = alpha % separateAtAngle === 0;// ||
-      // Math.round(Math.abs(alpha % separateAtAngle)) === Math.round(separateAtAngle);
+      const sepReached = isSepReached(alpha, separateAtAngle);
 
-      if (isSepReached) {
+      if (sepReached) {
+        placedVals++;
         lineHeight = Const.SL_SEP;
-      } else if (alpha % (separateAtAngle / 2) === 0) {
+      } else if (isSepReached(alpha, separateAtAngle / 2)) {
         lineHeight = Const.SL_MID_SEP;
       }
 
@@ -182,11 +188,11 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
       this._addScaleLine(sin, cos, higherEnd, lowerEnd, color);
 
-      if (isSepReached) {
-        const isValuePosOdd = (alpha / separateAtAngle) % 2 !== 0;
+      if (sepReached) {
+        const isValuePosEven = placedVals % 2 === 0;
         const isLast = alpha <= (-1) * this._end;
 
-        if (!(isAboveSuitableFactor && isValuePosOdd && !isLast)) {
+        if (!(isAboveSuitableFactor && isValuePosEven && !isLast)) {
           this._addScaleValue(sin, cos, lowerEnd, alpha);
         }
       }
