@@ -4,7 +4,7 @@
       class="red-light" [class.on]="input >= light"
       [attr.cx]="center" cy="55" r="10">
     </circle>
-    <text *ngIf="scaleFactor" class="factor" [attr.x]="center" y="80">x{{scaleFactor}} {{unit}}</text>
+    <text *ngIf="max > 1000" class="factor" [attr.x]="center" y="80">x{{scaleFactor}} {{unit}}</text>
     <text *ngIf="showDigital" class="digital" [attr.x]="center" y="145">{{input}}</text>
     <text class="unit" [attr.x]="center" y="155">{{unit}}</text>
   </svg>

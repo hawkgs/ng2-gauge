@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  template: `<ng-gauge [max]="max" [unit]="'rpm'" [showDigital]="true" [input]="input" [sectors]="sectors" [light]="7000"></ng-gauge>`
+  template: `<ng-gauge [max]="max" [unit]="'rpm'" [showDigital]="true" [input]="input"></ng-gauge>`
 })
 export class AppComponent {
-  max = 10000;
+  max = 140;
   input: number;
   sectors = [{
     from: 7000,
@@ -19,10 +19,10 @@ export class AppComponent {
 
   constructor() {
     // const target = Math.floor(Math.random() * this.max);
-    const target = 7500;
+    const target = 60;
 
     const simulate = () => {
-      for (let i = 0, t = 0; i < target; i += 15, t++) {
+      for (let i = 0, t = 0; i < target; i += 1, t++) {
         setTimeout(() => {
           this.input = i;
         }, t * 0.5);

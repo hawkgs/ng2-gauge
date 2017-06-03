@@ -128,7 +128,8 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   private _determineScaleFactor(factor = 10): number {
-    if (this.max / factor > 10) {
+    // Keep smaller factor until 3X
+    if (this.max / factor > 30) {
       return this._determineScaleFactor(factor * 10);
     }
     return factor;
@@ -157,10 +158,13 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this.scaleLines = [];
     this.scaleValues = [];
     const { separateAtAngle, lineFrequency } = this._determineScaleFactorSeparator();
+    const accumWith = lineFrequency / 2;
+    const isAboveSuitableFactor = this.max / this.scaleFactor > 10;
 
-    for (let alpha = 0; alpha >= (-1) * this._end; alpha -= lineFrequency / 2) {
+    for (let alpha = 0; alpha >= (-1) * this._end; alpha -= accumWith) {
       let lineHeight = Const.SL_NORM;
-      const isSepReached = alpha % separateAtAngle === 0;
+      const isSepReached = alpha % separateAtAngle === 0;// ||
+      // Math.round(Math.abs(alpha % separateAtAngle)) === Math.round(separateAtAngle);
 
       if (isSepReached) {
         lineHeight = Const.SL_SEP;
@@ -177,8 +181,14 @@ export class GaugeComponent implements OnInit, AfterViewInit {
       const color = this._getScaleLineColor(alpha);
 
       this._addScaleLine(sin, cos, higherEnd, lowerEnd, color);
+
       if (isSepReached) {
-        this._addScaleValue(sin, cos, lowerEnd, alpha);
+        const isValuePosOdd = (alpha / separateAtAngle) % 2 !== 0;
+        const isLast = alpha <= (-1) * this._end;
+
+        if (!(isAboveSuitableFactor && isValuePosOdd && !isLast)) {
+          this._addScaleValue(sin, cos, lowerEnd, alpha);
+        }
       }
     }
   }
