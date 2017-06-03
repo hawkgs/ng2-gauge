@@ -1,34 +1,57 @@
 <section class="angular-gauge">
   <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <circle *ngIf="light"
-      class="red-light" [class.on]="input >= light"
-      [attr.cx]="center" cy="55" r="10">
+      class="red-light"
+      [class.on]="input >= light"
+      [attr.cx]="center"
+      [attr.cy]="Config.LIGHT_Y"
+      [attr.r]="Config.LIGHT_RADIUS">
     </circle>
-    <text *ngIf="max > 1000" class="factor" [attr.x]="center" y="80">x{{scaleFactor}} {{unit}}</text>
-    <text *ngIf="showDigital" class="digital" [attr.x]="center" y="145">{{input}}</text>
-    <text class="unit" [attr.x]="center" y="155">{{unit}}</text>
+    <text *ngIf="max > Config.MAX_PURE_SCALE_VAL"
+      class="factor"
+      [attr.x]="center"
+      [attr.y]="Config.S_FAC_Y">
+      x{{scaleFactor}} {{unit}}
+    </text>
+    <text *ngIf="showDigital"
+      class="digital"
+      [attr.x]="center"
+      [attr.y]="Config.DIGITAL_Y">
+      {{input}}
+    </text>
+    <text class="unit" [attr.x]="center" [attr.y]="Config.UNIT_Y">{{unit}}</text>
   </svg>
   <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
-    <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="stroke" fill="none" />
+    <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="Config.ARC_STROKE" fill="none" />
     <path *ngFor="let arc of sectorArcs"
-      [attr.d]="arc.path" [attr.stroke]="arc.color"
-      [attr.stroke-width]="stroke" fill="none" />
+      [attr.d]="arc.path"
+      [attr.stroke]="arc.color"
+      [attr.stroke-width]="Config.ARC_STROKE"
+      fill="none" />
     <line *ngFor="let line of scaleLines"
-      stroke-width="2" [attr.stroke]="line.color || 'white'"
-      [attr.x1]="line.from.x" [attr.y1]="line.from.y"
-      [attr.x2]="line.to.x" [attr.y2]="line.to.y" />
+      [attr.stroke-width]="Config.SL_WIDTH"
+      [attr.stroke]="line.color || 'white'"
+      [attr.x1]="line.from.x"
+      [attr.y1]="line.from.y"
+      [attr.x2]="line.to.x"
+      [attr.y2]="line.to.y" />
     <text *ngFor="let val of scaleValues"
       class="text-val"
       dominant-baseline="central"
-      [attr.x]="val.coor.x" [attr.y]="val.coor.y"
+      [attr.x]="val.coor.x"
+      [attr.y]="val.coor.y"
       [attr.transform]="'rotate(' + gaugeRotation + ', ' + val.coor.x + ', ' + val.coor.y + ')'">
       {{val.text}}
     </text>
-    <rect #arrow class="arrow"
-      [attr.x]="center - 2" [attr.y]="arrowY"
-      [attr.height]="center - arrowY"
-      width="4" rx="2" ry="2">
+    <rect #arrow
+      class="arrow"
+      [attr.x]="center - Config.ARROW_WIDTH / 2"
+      [attr.y]="Config.ARROW_Y"
+      [attr.height]="center - Config.ARROW_Y"
+      [attr.width]="Config.ARROW_WIDTH"
+      [attr.rx]="Config.ARROW_WIDTH / 2"
+      [attr.ry]="Config.ARROW_WIDTH / 2">
     </rect>
-    <circle class="arrow-pin" [attr.cx]="center" [attr.cy]="center" r="8" />
+    <circle class="arrow-pin" [attr.cx]="center" [attr.cy]="center" [attr.r]="Config.ARROW_PIN_RAD" />
   </svg>
 </section>

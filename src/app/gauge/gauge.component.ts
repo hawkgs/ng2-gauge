@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 import { Sector, Line, Cartesian, RenderSector, Value } from './shared/gauge.interface';
-import * as Const from './shared/consts';
+import { Config, GaugeConfig } from './shared/config';
 
 @Component({
   selector: 'ng-gauge',
@@ -16,17 +16,18 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @ViewChild('gauge') gauge: ElementRef;
   @ViewChild('arrow') arrow: ElementRef;
 
-  @Input() start: number = Const.DEF_START;
-  @Input() end: number = Const.DEF_END;
+  @Input() start: number = Config.DEF_START;
+  @Input() end: number = Config.DEF_END;
   @Input() max: number;
   @Input() sectors: Sector[];
   @Input() unit: string;
   @Input() showDigital: boolean;
   @Input() light: number;
   @Input() factor: number;
+  @Input() lightTheme: boolean;
+  @Input() config: GaugeConfig;
 
-  stroke: number = Const.STROKE;
-  arrowY: number = Const.ARROW_Y;
+  Config: GaugeConfig = Config;
   viewBox: string;
   scaleLines: Line[];
   scaleValues: Value[];
@@ -38,7 +39,10 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   private _end: number;
   private _input: number;
 
-  constructor(private _renderer: Renderer) {}
+  constructor(private _renderer: Renderer) {
+    this.scaleLines = [];
+    this.scaleValues = [];
+  }
 
   @Input()
   set input(val: number) {
@@ -59,10 +63,10 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const width = Const.WIDTH + Const.STROKE;
+    const width = Config.WIDTH + Config.ARC_STROKE;
 
     this.viewBox = `0 0 ${width} ${width}`;
-    this.radius = Const.WIDTH / 2;
+    this.radius = Config.WIDTH / 2;
     this.center = width / 2;
     this._end = this.end;
 
@@ -144,7 +148,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     if (separateAtAngle % 1 !== 0) {
       lineFrequency = separateAtAngle;
     } else {
-      lineFrequency = Const.INIT_LINE_FREQ * 2;
+      lineFrequency = Config.INIT_LINE_FREQ * 2;
       for (lineFrequency; lineFrequency <= separateAtAngle; lineFrequency++) {
         if (separateAtAngle % lineFrequency === 0) {
           break;
@@ -156,8 +160,6 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   private _createScale(): void {
-    this.scaleLines = [];
-    this.scaleValues = [];
     const { separateAtAngle, lineFrequency } = this._determineScaleFactorSeparator();
     const accumWith = lineFrequency / 2;
     const isAboveSuitableFactor = this.max / this.scaleFactor > 10;
@@ -169,17 +171,17 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     };
 
     for (let alpha = 0; alpha >= (-1) * this._end; alpha -= accumWith) {
-      let lineHeight = Const.SL_NORM;
+      let lineHeight = Config.SL_NORM;
       const sepReached = isSepReached(alpha, separateAtAngle);
 
       if (sepReached) {
         placedVals++;
-        lineHeight = Const.SL_SEP;
+        lineHeight = Config.SL_SEP;
       } else if (isSepReached(alpha, separateAtAngle / 2)) {
-        lineHeight = Const.SL_MID_SEP;
+        lineHeight = Config.SL_MID_SEP;
       }
 
-      const higherEnd = this.center - Const.STROKE - 2;
+      const higherEnd = this.center - Config.ARC_STROKE - 2;
       const lowerEnd = higherEnd - lineHeight;
 
       const alphaRad = Math.PI / 180 * (alpha + 180);
@@ -231,9 +233,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
   private _addScaleValue(sin, cos, lowerEnd, alpha: number): void {
     let val = Math.round(alpha * (this.max / this._end)) * (-1);
-    let margin = Const.TXT_MARGIN * 2;
+    let margin = Config.TXT_MARGIN * 2;
 
-    if (this.max > 1000) {
+    if (this.max > Config.MAX_PURE_SCALE_VAL) {
       val /= this.scaleFactor;
       margin /= 2;
     }
