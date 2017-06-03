@@ -1,55 +1,55 @@
-section {
+.angular-gauge {
   position: relative;
   width: 400px;
 }
 
-svg.info {
+.angular-gauge svg.info {
   position: absolute;
   top: 0;
   left: 0;
 }
 
-rect.arrow {
+.angular-gauge rect.arrow {
   transform-origin: 50% 100%;
   fill: orange;
 }
 
-text {
+.angular-gauge text {
   font-family: 'Orbitron', sans-serif;
   font-weight: bold;
   text-anchor: middle;
   fill: #fff;
 }
 
-text.text-val {
+.angular-gauge text.text-val {
   font-size: 12px;
 }
 
-circle.arrow-pin {
+.angular-gauge circle.arrow-pin {
   fill: #333;
 }
 
-path.main-arc {
+.angular-gauge path.main-arc {
   stroke: #fff;
 }
 
-text.factor {
+.angular-gauge text.factor {
   font-size: 7px;
 }
 
-text.digital {
+.angular-gauge text.digital {
   font-size: 16px;
 }
 
-text.unit {
+.angular-gauge text.unit {
   font-size: 10px;
 }
 
-circle.red-light {
+.angular-gauge circle.red-light {
   fill: #ff4f4f;
   opacity: 0.1;
 }
 
-circle.red-light.on {
+.angular-gauge circle.red-light.on {
   opacity: 1;
 }

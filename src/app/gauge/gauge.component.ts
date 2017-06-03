@@ -1,6 +1,6 @@
 import {
   Component, Input, ViewChild, OnInit,
-  AfterViewInit, Renderer, ElementRef
+  AfterViewInit, Renderer, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
 import { Sector, Line, Cartesian, RenderSector, Value } from './shared/gauge.interface';
@@ -9,7 +9,8 @@ import * as Const from './shared/consts';
 @Component({
   selector: 'ng-gauge',
   templateUrl: './gauge.component.html',
-  styleUrls: ['./gauge.component.css']
+  styleUrls: ['./gauge.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class GaugeComponent implements OnInit, AfterViewInit {
   @ViewChild('gauge') gauge: ElementRef;
