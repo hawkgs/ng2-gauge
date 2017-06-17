@@ -237,6 +237,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
     if (this.max > Config.MAX_PURE_SCALE_VAL) {
       val /= this.scaleFactor;
+      val = Math.round(val * 100) / 100;
       margin /= 2;
     }
 
