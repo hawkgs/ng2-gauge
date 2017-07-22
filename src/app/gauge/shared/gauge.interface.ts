@@ -1,3 +1,5 @@
+import { GaugeConfig } from './config';
+
 export interface Cartesian {
   x: number;
   y: number;
@@ -23,6 +25,19 @@ export interface Sector {
 export interface RenderSector {
   path: string;
   color: string;
+}
+
+export interface GaugeProps {
+  start: number;
+  end: number;
+  max: number;
+  sectors: Sector[];
+  unit: string;
+  showDigital: boolean;
+  light: number;
+  lightTheme: boolean;
+  factor: number;
+  config: GaugeConfig;
 }
 
 export enum Separator {
