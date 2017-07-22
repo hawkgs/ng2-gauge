@@ -16,8 +16,8 @@ export interface GaugeConfig {
   UNIT_Y?: number;             // Unit label Y position
   MAX_PURE_SCALE_VAL?: number; // Max pure scale value (After that the scale shows only the multiplier)
   INIT_LINE_FREQ?: number;     // Initial scale line frequency
-  DEF_START?: number;          // Default start value (Use the input property in order to change)
-  DEF_END?: number;            // Default end value (Use the input property in order to change)
+  DEF_START?: number;          // Default start angle (Use the input property in order to change)
+  DEF_END?: number;            // Default end angle (Use the input property in order to change)
 }
 
 export const Config: GaugeConfig = {

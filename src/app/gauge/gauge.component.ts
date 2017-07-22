@@ -23,8 +23,8 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   @Input() unit: string;
   @Input() showDigital: boolean;
   @Input() light: number;
-  @Input() factor: number;
   @Input() lightTheme: boolean;
+  @Input() factor: number;
   @Input() config: GaugeConfig;
 
   Config: GaugeConfig = Config;

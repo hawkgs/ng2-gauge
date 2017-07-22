@@ -26,6 +26,10 @@
   font-family: 'Orbitron', sans-serif;
   font-weight: bold;
   text-anchor: middle;
+  fill: #333;
+}
+
+.angular-gauge.light text {
   fill: #fff;
 }
 
@@ -38,6 +42,10 @@
 }
 
 .angular-gauge path.main-arc {
+  stroke: #333;
+}
+
+.angular-gauge.light path.main-arc {
   stroke: #fff;
 }
 
