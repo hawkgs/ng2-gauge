@@ -58,7 +58,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     return this._arc(0, this._end);
   }
 
-  get gaugeRotation(): number {
+  get gaugeRotationAngle(): number {
     return this._end - this.end;
   }
 
@@ -86,6 +86,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     this._rotateGauge();
   }
 
+  /**
+   * Calculate arc.
+   */
   private _arc(start, end: number): string {
     const largeArc = end - start <= 180 ? 0 : 1;
     const startCoor = this._getAngleCoor(start);
@@ -94,6 +97,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     return `M ${endCoor.x} ${endCoor.y} A ${this.radius} ${this.radius} 0 ${largeArc} 0 ${startCoor.x} ${startCoor.y}`;
   }
 
+  /**
+   * Get angle coordinates (Cartesian coordinates).
+   */
   private _getAngleCoor(degrees: number): Cartesian {
     const rads = (degrees - 90) * Math.PI / 180;
     return {
@@ -102,6 +108,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     };
   }
 
+  /**
+   * Calculate/translate the user-defined sectors to arcs.
+   */
   private _calculateSectors(): void {
     if (!this.sectors) {
       return;
@@ -122,16 +131,25 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Update the position of the arrow based on the input.
+   */
   private _updateArrowPos(input: number): void {
     const pos = (this._end / this.max) * input;
     this._renderer.setElementStyle(this.arrow.nativeElement, 'transform', `rotate(${pos}deg)`);
   }
 
+  /**
+   * Rotate the gauge based on the start property. The CSS rotation, saves additional calculations with SVG.
+   */
   private _rotateGauge(): void {
     const angle = 360 - this.start;
     this._renderer.setElementStyle(this.gauge.nativeElement, 'transform', `rotate(-${angle}deg)`);
   }
 
+  /**
+   * Determine the scale factor (i.e. if max = 9000 then scale_factor = 1000)
+   */
   private _determineScaleFactor(factor = 10): number {
     // Keep smaller factor until 3X
     if (this.max / factor > 30) {
@@ -140,11 +158,15 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     return factor;
   }
 
+  /**
+   * Determine the line frequency which represents after what angle we should put a line.
+   */
   private _determineLineFrequency(): number {
     const separators = this.max / this.scaleFactor;
     const separateAtAngle = this._end / separators;
     let lineFrequency: number;
 
+    // If separateAtAngle is not an integer, use its value as the line frequency.
     if (separateAtAngle % 1 !== 0) {
       lineFrequency = separateAtAngle;
     } else {
@@ -159,7 +181,10 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     return lineFrequency;
   }
 
-  private _isSeparatorReached(idx: number, lineFrequency: number): Separator {
+  /**
+   * Checks whether the line (based on index) is big or small separator.
+   */
+  private _isSeparatorReached(idx, lineFrequency: number): Separator {
     const separators = this.max / this.scaleFactor;
     const totalSeparators = this._end / lineFrequency;
     const separateAtIdx = totalSeparators / separators;
@@ -172,6 +197,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     return Separator.NA;
   };
 
+  /**
+   * Creates the scale.
+   */
   private _createScale(): void {
     const accumWith = this._determineLineFrequency() / 2;
     const isAboveSuitableFactor = this.max / this.scaleFactor > 10;
@@ -181,6 +209,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
       let lineHeight = Config.SL_NORM;
       const sepReached = this._isSeparatorReached(i, accumWith);
 
+      // Set the line height based on its type
       switch (sepReached) {
         case Separator.Big:
           placedVals++;
@@ -191,6 +220,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
           break;
       }
 
+      // Draw the line
       const higherEnd = this.center - Config.ARC_STROKE - 2;
       const lowerEnd = higherEnd - lineHeight;
 
@@ -201,6 +231,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
       this._addScaleLine(sin, cos, higherEnd, lowerEnd, color);
 
+      // Put a scale value
       if (sepReached === Separator.Big) {
         const isValuePosEven = placedVals % 2 === 0;
         const isLast = alpha <= (-1) * this._end;
@@ -212,6 +243,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Get the scale line color from the user-provided sectors definitions.
+   */
   private _getScaleLineColor(alpha: number): string {
     alpha *= (-1);
     let color: string;
@@ -227,6 +261,9 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     return color;
   }
 
+  /**
+   * Add a scale line to the list that will be later rendered.
+   */
   private _addScaleLine(sin, cos, higherEnd, lowerEnd: number, color: string): void {
     this.scaleLines.push({
       from: {
@@ -241,21 +278,25 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Add a scale value.
+   */
   private _addScaleValue(sin, cos, lowerEnd, alpha: number): void {
     let val = Math.round(alpha * (this.max / this._end)) * (-1);
-    let margin = Config.TXT_MARGIN * 2;
+    let posMargin = Config.TXT_MARGIN * 2;
 
+    // Use the multiplier instead of the real value, if above MAX_PURE_SCALE_VAL (i.e. 1000)
     if (this.max > Config.MAX_PURE_SCALE_VAL) {
       val /= this.scaleFactor;
       val = Math.round(val * 100) / 100;
-      margin /= 2;
+      posMargin /= 2;
     }
 
     this.scaleValues.push({
       text: val.toString(),
       coor: {
-        x: sin * (lowerEnd - margin) + this.center,
-        y: cos * (lowerEnd - margin) + this.center
+        x: sin * (lowerEnd - posMargin) + this.center,
+        y: cos * (lowerEnd - posMargin) + this.center
       }
     });
   }
