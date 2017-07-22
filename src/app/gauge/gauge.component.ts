@@ -92,7 +92,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * Calculate arc.
    */
-  private _arc(start, end: number): string {
+  private _arc(start: number, end: number): string {
     const largeArc = end - start <= 180 ? 0 : 1;
     const startCoor = this._getAngleCoor(start);
     const endCoor = this._getAngleCoor(end);
@@ -187,7 +187,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * Checks whether the line (based on index) is big or small separator.
    */
-  private _isSeparatorReached(idx, lineFrequency: number): Separator {
+  private _isSeparatorReached(idx: number, lineFrequency: number): Separator {
     const separators = this.max / this.scaleFactor;
     const totalSeparators = this._end / lineFrequency;
     const separateAtIdx = totalSeparators / separators;
@@ -251,7 +251,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   private _getScaleLineColor(alpha: number): string {
     alpha *= (-1);
-    let color: string;
+    let color: string = '';
 
     if (this.sectors) {
       this.sectors.forEach((s: Sector) => {
@@ -267,7 +267,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * Add a scale line to the list that will be later rendered.
    */
-  private _addScaleLine(sin, cos, higherEnd, lowerEnd: number, color: string): void {
+  private _addScaleLine(sin: number, cos: number, higherEnd: number, lowerEnd: number, color: string): void {
     this.scaleLines.push({
       from: {
         x: sin * higherEnd + this.center,
@@ -284,7 +284,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * Add a scale value.
    */
-  private _addScaleValue(sin, cos, lowerEnd, alpha: number): void {
+  private _addScaleValue(sin: number, cos: number, lowerEnd: number, alpha: number): void {
     let val = Math.round(alpha * (this.max / this._end)) * (-1);
     let posMargin = Config.TXT_MARGIN * 2;
 

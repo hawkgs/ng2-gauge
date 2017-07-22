@@ -1,15 +1,15 @@
-# angular-gauge
+# ng2-gauge
 
-![angular-gauge](./assets/gauge.png)
+![ng2-gauge](./assets/gauge.png)
 
 Gauge component for Angular
 
-![Build Status](https://travis-ci.org/hawkgs/angular-gauge.svg?branch=master) v1.0.0
+![Build Status](https://travis-ci.org/hawkgs/ng2-gauge.svg?branch=master) v1.0.4
 
 ## Installation
 
 ```
-npm install angular-gauge
+npm install ng2-gauge --save
 ```
 
 ## How to?
@@ -18,7 +18,7 @@ You should import the `GaugeModule` to your desired module:
 
 ```typescript
 import { NgModule } from '@angular/core';
-import { GaugeModule } from 'angular-gauge';
+import { GaugeModule } from 'ng2-gauge';
 
 @NgModule({
     imports : [CommonModule, GaugeModule, ...],
@@ -26,11 +26,10 @@ import { GaugeModule } from 'angular-gauge';
 export class SharedModule {}
 ```
 
-Then you can simply import the component and add it to your template:
+Then you can simply use the component in your template:
 
 ```typescript
 import { Component } from '@angular/core';
-import { GaugeComponent } from 'angular-gauge';
 
 @Component({
   selector: 'app-my-component',
