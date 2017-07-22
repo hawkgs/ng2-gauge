@@ -1,6 +1,6 @@
 export interface GaugeConfig {
   WIDTH?: number;              // Width of the gauge (Use CSS in order to change)
-  ARC_STROKE?: number;         // Stroke width of the arc
+  ARC_STROKE?: number;         // Stroke/width of the arc
   ARROW_Y?: number;            // Distance from the arc to the tip of the arrow (Y position)
   ARROW_WIDTH?: number;        // Arrow width/stroke
   ARROW_PIN_RAD?: number;      // Radius of the arrow pin
