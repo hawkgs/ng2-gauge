@@ -4,6 +4,8 @@
 
 Gauge component for Angular
 
+v1.0.0
+
 ## Installation
 
 ```
@@ -67,10 +69,10 @@ Example:
 const max = 9000;
 const sectors = [{
   from: 6500,
-  to: 7500,
+  to: 8000,
   color: 'orange'
 }, {
-  from: 7500,
+  from: 8000,
   to: 9000,
   color: 'red'
 }];
