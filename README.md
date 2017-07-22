@@ -1,5 +1,7 @@
 # angular-gauge
 
+![angular-gauge](./assets/gauge.png)
+
 Gauge component for Angular
 
 ## Installation
@@ -47,8 +49,8 @@ The component provides a list of the following options:
 - `max: number` (required) - The maximal value of the gauge. It is suggested to use a number that is divisible by 100, 1000 and so on.
 - `input: number` (required) - The current value of the gauge.
 - `unit: string` - The unit of the gauge (i.e. mph, psi, etc.)
-- `start: number` (in degrees) - The start/beginning of the scale
-- `end: number` (in degrees) - The end of the scale
+- `start: number` (in degrees; default 225) - The start/beginning of the scale
+- `end: number` (in degrees; default 135) - The end of the scale
 - `showDigital: boolean` - Displays the current value as number inside the gauge
 - `lightTheme: boolean` - Switches to the light theme
 - `light: number` - Shows a red light when the specified limit is reached
@@ -73,3 +75,7 @@ const sectors = [{
   color: 'red'
 }];
 ```
+
+## Styling
+
+The component provides two themes - light (default) and dark. Yet, you can easily alter the CSS through the parent component in order to fit your needs. The font used for the gauge is Orbitron (Google Fonts).
