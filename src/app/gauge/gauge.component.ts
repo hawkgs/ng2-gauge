@@ -3,8 +3,9 @@ import {
   AfterViewInit, Renderer, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
-import { Sector, Line, Cartesian, RenderSector, Value, Separator } from './shared/gauge.interface';
+import { Sector, Line, Cartesian, RenderSector, Value, Separator, GaugeProps } from './shared/gauge.interface';
 import { Config, GaugeConfig } from './shared/config';
+import { validate } from './shared/validators';
 
 @Component({
   selector: 'ng-gauge',
@@ -12,7 +13,7 @@ import { Config, GaugeConfig } from './shared/config';
   styleUrls: ['./gauge.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GaugeComponent implements OnInit, AfterViewInit {
+export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @ViewChild('gauge') gauge: ElementRef;
   @ViewChild('arrow') arrow: ElementRef;
 
@@ -63,6 +64,8 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    validate(this);
+
     const width = Config.WIDTH + Config.ARC_STROKE;
 
     this.viewBox = `0 0 ${width} ${width}`;
@@ -148,7 +151,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Determine the scale factor (i.e. if max = 9000 then scale_factor = 1000)
+   * Determine the scale factor (10^n number; i.e. if max = 9000 then scale_factor = 1000)
    */
   private _determineScaleFactor(factor = 10): number {
     // Keep smaller factor until 3X

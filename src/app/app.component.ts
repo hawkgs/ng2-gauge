@@ -6,29 +6,27 @@ import { Component } from '@angular/core';
     <ng-gauge
       [max]="max"
       [unit]="'rpm'"
-      [lightTheme]="true"
-      [sectors]="sectors"
       [showDigital]="true"
-      [input]="input"
-      [light]="7700">
+      [sectors]="sectors"
+      [input]="input">
     </ng-gauge>`
 })
 export class AppComponent {
   max = 9000;
   input: number;
   sectors = [{
-    from: 7000,
-    to: 7700,
+    from: 6500,
+    to: 8000,
     color: 'orange'
   }, {
-    from: 7700,
+    from: 8000,
     to: 9000,
     color: 'red'
   }];
 
   constructor() {
     // const target = Math.floor(Math.random() * this.max);
-    const target = 8000;
+    const target = 5600;
 
     const simulate = () => {
       for (let i = 0, t = 0; i < target; i += 15, t++) {

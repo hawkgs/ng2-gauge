@@ -13,6 +13,7 @@ npm install angular-gauge
 You should import the `GaugeModule` to your desired module:
 
 ```typescript
+import { NgModule } from '@angular/core';
 import { GaugeModule } from 'angular-gauge';
 
 @NgModule({
