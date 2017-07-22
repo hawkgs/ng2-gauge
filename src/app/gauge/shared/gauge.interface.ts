@@ -24,3 +24,9 @@ export interface RenderSector {
   path: string;
   color: string;
 }
+
+export enum Separator {
+  NA,
+  Big,
+  Small,
+}

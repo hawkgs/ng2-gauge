@@ -3,7 +3,7 @@ import {
   AfterViewInit, Renderer, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
-import { Sector, Line, Cartesian, RenderSector, Value } from './shared/gauge.interface';
+import { Sector, Line, Cartesian, RenderSector, Value, Separator } from './shared/gauge.interface';
 import { Config, GaugeConfig } from './shared/config';
 
 @Component({
@@ -140,7 +140,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
     return factor;
   }
 
-  private _determineScaleFactorSeparator(): { separateAtAngle: number, lineFrequency: number } {
+  private _determineLineFrequency(): number {
     const separators = this.max / this.scaleFactor;
     const separateAtAngle = this._end / separators;
     let lineFrequency: number;
@@ -156,29 +156,39 @@ export class GaugeComponent implements OnInit, AfterViewInit {
       }
     }
 
-    return { separateAtAngle, lineFrequency };
+    return lineFrequency;
   }
 
+  private _isSeparatorReached(idx: number, lineFrequency: number): Separator {
+    const separators = this.max / this.scaleFactor;
+    const totalSeparators = this._end / lineFrequency;
+    const separateAtIdx = totalSeparators / separators;
+
+    if (idx % separateAtIdx === 0) {
+      return Separator.Big;
+    } else if (idx % (separateAtIdx / 2) === 0) {
+      return Separator.Small;
+    }
+    return Separator.NA;
+  };
+
   private _createScale(): void {
-    const { separateAtAngle, lineFrequency } = this._determineScaleFactorSeparator();
-    const accumWith = lineFrequency / 2;
+    const accumWith = this._determineLineFrequency() / 2;
     const isAboveSuitableFactor = this.max / this.scaleFactor > 10;
     let placedVals = 0;
 
-    const isSepReached = (alpha: number, separateAt: number): boolean => {
-      return alpha % separateAt === 0 || // For integers (4 % 2 = 0)
-        Math.round(Math.abs(alpha % separateAt)) === Math.round(separateAt); // For floats (4 % 2.001 = 1.999)
-    };
-
-    for (let alpha = 0; alpha >= (-1) * this._end; alpha -= accumWith) {
+    for (let alpha = 0, i = 0; alpha >= (-1) * this._end; alpha -= accumWith, i++) {
       let lineHeight = Config.SL_NORM;
-      const sepReached = isSepReached(alpha, separateAtAngle);
+      const sepReached = this._isSeparatorReached(i, accumWith);
 
-      if (sepReached) {
-        placedVals++;
-        lineHeight = Config.SL_SEP;
-      } else if (isSepReached(alpha, separateAtAngle / 2)) {
-        lineHeight = Config.SL_MID_SEP;
+      switch (sepReached) {
+        case Separator.Big:
+          placedVals++;
+          lineHeight = Config.SL_SEP;
+          break;
+        case Separator.Small:
+          lineHeight = Config.SL_MID_SEP;
+          break;
       }
 
       const higherEnd = this.center - Config.ARC_STROKE - 2;
@@ -191,7 +201,7 @@ export class GaugeComponent implements OnInit, AfterViewInit {
 
       this._addScaleLine(sin, cos, higherEnd, lowerEnd, color);
 
-      if (sepReached) {
+      if (sepReached === Separator.Big) {
         const isValuePosEven = placedVals % 2 === 0;
         const isLast = alpha <= (-1) * this._end;
 
