@@ -5,7 +5,7 @@ const showError = (text: string) => {
 };
 
 export const validate = (props: GaugeProps) => {
-  if (props.max) {
+  if (!props.max) {
     showError('The maximal value is not set.');
   }
 
