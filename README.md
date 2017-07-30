@@ -1,8 +1,18 @@
 # ng2-gauge
 
-![ng2-gauge](./assets/gauge.png)
-
 Gauge component for Angular
+
+<table>
+  <tr>
+    <td>
+      <img src="./assets/gauge.png" alt="ng2-gauge" />
+    </td>
+    <td>
+      <img src="./assets/demo.gif" />
+      <p><em>Suitable for building virtual dashboard (initially designed for that).</em></p>
+    </td>
+  </tr>
+</table>
 
 ![Build Status](https://travis-ci.org/hawkgs/ng2-gauge.svg?branch=master) v1.0.5
 
