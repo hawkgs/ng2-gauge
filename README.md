@@ -9,7 +9,7 @@ Gauge component for Angular
     </td>
     <td>
       <img src="./assets/demo.gif" />
-      <p><em>Suitable for building virtual dashboard (initially designed for that).</em></p>
+      <p><em>Suitable for building virtual dashboards (initially designed for that).</em></p>
     </td>
   </tr>
 </table>
