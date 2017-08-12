@@ -6,66 +6,66 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
-.angular-gauge {
+.ng-gauge {
   position: relative;
   width: 400px;
 }
 
-.angular-gauge svg.info {
+.ng-gauge svg.info {
   position: absolute;
   top: 0;
   left: 0;
 }
 
-.angular-gauge rect.arrow {
+.ng-gauge rect.arrow {
   transform-origin: 50% 100%;
   fill: orange;
 }
 
-.angular-gauge text {
+.ng-gauge text {
   font-family: 'Orbitron', sans-serif;
   font-weight: bold;
   text-anchor: middle;
   fill: #333;
 }
 
-.angular-gauge.light text {
+.ng-gauge.light text {
   fill: #fff;
 }
 
-.angular-gauge text.text-val {
+.ng-gauge text.text-val {
   font-size: 12px;
 }
 
-.angular-gauge circle.arrow-pin {
+.ng-gauge circle.arrow-pin {
   fill: #333;
 }
 
-.angular-gauge path.main-arc {
+.ng-gauge path.main-arc {
   stroke: #333;
 }
 
-.angular-gauge.light path.main-arc {
+.ng-gauge.light path.main-arc {
   stroke: #fff;
 }
 
-.angular-gauge text.factor {
+.ng-gauge text.factor {
   font-size: 7px;
 }
 
-.angular-gauge text.digital {
+.ng-gauge text.digital {
   font-size: 16px;
 }
 
-.angular-gauge text.unit {
+.ng-gauge text.unit {
   font-size: 10px;
 }
 
-.angular-gauge circle.red-light {
+.ng-gauge circle.red-light {
   fill: #ff4f4f;
   opacity: 0.1;
 }
 
-.angular-gauge circle.red-light.on {
+.ng-gauge circle.red-light.on {
   opacity: 1;
 }
