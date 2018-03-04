@@ -19,7 +19,6 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
 
   @Input() start: number;
   @Input() end: number;
-  @Input() max: number;
   @Input() sectors: Sector[];
   @Input() unit: string;
   @Input() showDigital: boolean;
@@ -36,27 +35,35 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   radius: number;
   center: number;
   scaleFactor: number;
+
   private _end: number;
   private _input: number;
+  private _max: number;
+  private _mappedSectors: Sector[];
 
-  constructor(private _renderer: Renderer2) {
-    this.scaleLines = [];
-    this.scaleValues = [];
-  }
+  constructor(private _renderer: Renderer2) {}
 
   @Input()
   set input(val: number) {
     this._input = val;
-    this.scaleLines = [];
-    this.scaleValues = [];
     this._updateArrowPos(val);
-    this._calculateSectors();
-    this.scaleFactor = this.factor || this._determineScaleFactor();
-    this._createScale();
   }
 
   get input(): number {
     return this._input;
+  }
+
+  @Input()
+  set max(val: number) {
+    if (this._max) {
+      this._max = val;
+      this._initialize();
+    }
+    this._max = val;
+  }
+
+  get max(): number {
+    return this._max;
   }
 
   get arc(): string {
@@ -68,15 +75,17 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   }
 
   ngOnInit(): void {
-    this.config = Object.assign(Config, this.config)
+    this.config = Object.assign(Config, this.config);
+
     if (!this.start) {
       this.start = this.config.DEF_START;
     }
     if (!this.end) {
       this.end = this.config.DEF_END;
     }
+
     validate(this);
-    
+
     const width = this.config.WIDTH + this.config.ARC_STROKE;
 
     this.viewBox = `0 0 ${width} ${width}`;
@@ -90,14 +99,24 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       this._end -= this.start;
     }
 
-    this._updateArrowPos(this._input);
-    this._calculateSectors();
-    this.scaleFactor = this.factor || this._determineScaleFactor();
-    this._createScale();
+    this._initialize();
   }
 
   ngAfterViewInit(): void {
     this._rotateGauge();
+  }
+
+  /**
+   * Initialize gauge.
+   */
+  private _initialize() {
+    this.scaleLines = [];
+    this.scaleValues = [];
+
+    this._calculateSectors();
+    this._updateArrowPos(this._input);
+    this.scaleFactor = this.factor || this._determineScaleFactor();
+    this._createScale();
   }
 
   /**
@@ -130,14 +149,14 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       return;
     }
 
-    this.sectors = this.sectors.map((s: Sector) => {
+    this._mappedSectors = JSON.parse(JSON.stringify(this.sectors));
+    this._mappedSectors.forEach((s: Sector) => {
       const ratio = this._end / this.max;
       s.from *= ratio;
       s.to *= ratio;
-      return s;
     });
 
-    this.sectorArcs = this.sectors.map((s: Sector) => {
+    this.sectorArcs = this._mappedSectors.map((s: Sector) => {
       return {
         path: this._arc(s.from, s.to),
         color: s.color
@@ -262,10 +281,10 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   private _getScaleLineColor(alpha: number): string {
     alpha *= (-1);
-    let color: string = '';
+    let color = '';
 
-    if (this.sectors) {
-      this.sectors.forEach((s: Sector) => {
+    if (this._mappedSectors) {
+      this._mappedSectors.forEach((s: Sector) => {
         if (s.from <= alpha && alpha <= s.to) {
           color = s.color;
         }

@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
       [unit]="'rpm'"
       [showDigital]="true"
       [sectors]="sectors"
-      [config]="{WIDTH:400}"
+      [config]="{ WIDTH: 200 }"
       [input]="input">
     </ng-gauge>`
 })
@@ -36,5 +36,9 @@ export class AppComponent {
     };
 
     simulate();
+
+    // setTimeout(() => {
+    //   this.max = 15000;
+    // }, 5000);
   }
 }
