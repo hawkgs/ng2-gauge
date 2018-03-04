@@ -1,35 +1,34 @@
-<section class="angular-gauge" [class.light]="lightTheme">
+<section class="ng-gauge" [class.light]="lightTheme" [style.width]="config.WIDTH + 'px'">
   <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
-    <circle *ngIf="light"
-      class="red-light"
+    <circle *ngIf="light"  class="red-light"
       [class.on]="input >= light"
       [attr.cx]="center"
-      [attr.cy]="Config.LIGHT_Y"
-      [attr.r]="Config.LIGHT_RADIUS">
+      [attr.cy]="config.LIGHT_Y"
+      [attr.r]="config.LIGHT_RADIUS">
     </circle>
-    <text *ngIf="max > Config.MAX_PURE_SCALE_VAL"
+    <text *ngIf="max > config.MAX_PURE_SCALE_VAL"
       class="factor"
       [attr.x]="center"
-      [attr.y]="Config.S_FAC_Y">
+      [attr.y]="config.S_FAC_Y">
       x{{scaleFactor}} {{unit}}
     </text>
     <text *ngIf="showDigital"
       class="digital"
       [attr.x]="center"
-      [attr.y]="Config.DIGITAL_Y">
+      [attr.y]="config.DIGITAL_Y">
       {{input}}
     </text>
-    <text class="unit" [attr.x]="center" [attr.y]="Config.UNIT_Y">{{unit}}</text>
+    <text class="unit" [attr.x]="center" [attr.y]="config.UNIT_Y">{{unit}}</text>
   </svg>
-  <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
-    <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="Config.ARC_STROKE" fill="none" />
+  <svg #gauge [attr.viewBox]="viewBox" [attr.width]="config.WIDTH" xmlns="http://www.w3.org/2000/svg">
+    <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="config.ARC_STROKE" fill="none" />
     <path *ngFor="let arc of sectorArcs"
       [attr.d]="arc.path"
       [attr.stroke]="arc.color"
-      [attr.stroke-width]="Config.ARC_STROKE"
+      [attr.stroke-width]="config.ARC_STROKE"
       fill="none" />
     <line *ngFor="let line of scaleLines"
-      [attr.stroke-width]="Config.SL_WIDTH"
+      [attr.stroke-width]="config.SL_WIDTH"
       [attr.stroke]="line.color || (!lightTheme ? '#333' : '#fff')"
       [attr.x1]="line.from.x"
       [attr.y1]="line.from.y"
@@ -45,13 +44,13 @@
     </text>
     <rect #arrow
       class="arrow"
-      [attr.x]="center - Config.ARROW_WIDTH / 2"
-      [attr.y]="Config.ARROW_Y"
-      [attr.height]="center - Config.ARROW_Y"
-      [attr.width]="Config.ARROW_WIDTH"
-      [attr.rx]="Config.ARROW_WIDTH / 2"
-      [attr.ry]="Config.ARROW_WIDTH / 2">
+      [attr.x]="center - config.ARROW_WIDTH / 2"
+      [attr.y]="config.ARROW_Y"
+      [attr.height]="center - config.ARROW_Y"
+      [attr.width]="config.ARROW_WIDTH"
+      [attr.rx]="config.ARROW_WIDTH / 2"
+      [attr.ry]="config.ARROW_WIDTH / 2">
     </rect>
-    <circle class="arrow-pin" [attr.cx]="center" [attr.cy]="center" [attr.r]="Config.ARROW_PIN_RAD" />
+    <circle class="arrow-pin" [attr.cx]="center" [attr.cy]="center" [attr.r]="config.ARROW_PIN_RAD" />
   </svg>
 </section>

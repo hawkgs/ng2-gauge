@@ -8,7 +8,7 @@
 
 .ng-gauge {
   position: relative;
-  width: 400px;
+  display: block;
 }
 
 .ng-gauge svg.info {
@@ -18,7 +18,7 @@
 }
 
 .ng-gauge rect.arrow {
-  transform-origin: 50% 100%;
+  transform-origin: 50% 50%;
   fill: orange;
 }
 

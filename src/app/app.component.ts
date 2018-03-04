@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
       [unit]="'rpm'"
       [showDigital]="true"
       [sectors]="sectors"
+      [config]="{WIDTH:400}"
       [input]="input">
     </ng-gauge>`
 })
@@ -25,9 +26,7 @@ export class AppComponent {
   }];
 
   constructor() {
-    // const target = Math.floor(Math.random() * this.max);
     const target = 5600;
-
     const simulate = () => {
       for (let i = 0, t = 0; i < target; i += 15, t++) {
         setTimeout(() => {
