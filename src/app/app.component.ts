@@ -8,7 +8,6 @@ import { Component } from '@angular/core';
       [unit]="'rpm'"
       [showDigital]="true"
       [sectors]="sectors"
-      [config]="{ WIDTH: 200 }"
       [input]="input">
     </ng-gauge>`
 })

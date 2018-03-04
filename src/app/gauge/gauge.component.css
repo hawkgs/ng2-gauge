@@ -8,6 +8,7 @@
 
 .ng-gauge {
   position: relative;
+  width: 400px; /* Default size, use @Input size for manipulation */
 }
 
 .ng-gauge svg.info {

@@ -17,6 +17,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @ViewChild('gauge') gauge: ElementRef;
   @ViewChild('arrow') arrow: ElementRef;
 
+  @Input() size: number;
   @Input() start: number;
   @Input() end: number;
   @Input() sectors: Sector[];

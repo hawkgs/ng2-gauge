@@ -1,4 +1,4 @@
-<section class="ng-gauge" [class.light]="lightTheme" [style.width]="config.WIDTH + 'px'">
+<section class="ng-gauge" [class.light]="lightTheme" [style.width]="size + 'px'">
   <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <circle *ngIf="light"  class="red-light"
       [class.on]="input >= light"
@@ -20,7 +20,7 @@
     </text>
     <text class="unit" [attr.x]="center" [attr.y]="config.UNIT_Y">{{unit}}</text>
   </svg>
-  <svg #gauge [attr.viewBox]="viewBox" [attr.width]="config.WIDTH" xmlns="http://www.w3.org/2000/svg">
+  <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="config.ARC_STROKE" fill="none" />
     <path *ngFor="let arc of sectorArcs"
       [attr.d]="arc.path"

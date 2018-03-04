@@ -14,7 +14,14 @@ Gauge component for Angular
   </tr>
 </table>
 
-![Build Status](https://travis-ci.org/hawkgs/ng2-gauge.svg?branch=master) v1.0.5
+![Build Status](https://travis-ci.org/hawkgs/ng2-gauge.svg?branch=master) v1.1.0
+
+## v1.1.0 Changelog
+
+- Fix support of the `config` input (@mehrjouei)
+- Fix arrow position (@mehrjouei)
+- Introduce dynamic `max` (@leticiafatimaa)
+- Introduce `size` property for changing the width/size
 
 ## Installation
 
@@ -60,6 +67,7 @@ The component provides a list of the following options:
 - `max: number` (required) - The maximal value of the gauge. It is suggested to use a number that is divisible by 100, 1000 and so on.
 - `input: number` (required) - The current value of the gauge.
 - `unit: string` - The unit of the gauge (i.e. mph, psi, etc.)
+- `size: number` (in pixels; default 400) - Size/width of the gauge.
 - `start: number` (in degrees; default 225) - The start/beginning of the scale
 - `end: number` (in degrees; default 135) - The end of the scale
 - `showDigital: boolean` - Displays the current value as number inside the gauge
