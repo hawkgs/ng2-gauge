@@ -1,34 +1,34 @@
-<section class="ng-gauge" [class.light]="lightTheme" >
-  <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg" [attr.width]="Configuration.WIDTH">
+<section class="ng-gauge" [class.light]="lightTheme" [style.width]="config.WIDTH + 'px'">
+  <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <circle *ngIf="light"  class="red-light"
       [class.on]="input >= light"
       [attr.cx]="center"
-      [attr.cy]="Configuration.LIGHT_Y"
-      [attr.r]="Configuration.LIGHT_RADIUS">
+      [attr.cy]="config.LIGHT_Y"
+      [attr.r]="config.LIGHT_RADIUS">
     </circle>
-    <text *ngIf="max > Configuration.MAX_PURE_SCALE_VAL"
+    <text *ngIf="max > config.MAX_PURE_SCALE_VAL"
       class="factor"
       [attr.x]="center"
-      [attr.y]="Configuration.S_FAC_Y">
+      [attr.y]="config.S_FAC_Y">
       x{{scaleFactor}} {{unit}}
     </text>
     <text *ngIf="showDigital"
       class="digital"
       [attr.x]="center"
-      [attr.y]="Configuration.DIGITAL_Y">
+      [attr.y]="config.DIGITAL_Y">
       {{input}}
     </text>
-    <text class="unit" [attr.x]="center" [attr.y]="Configuration.UNIT_Y">{{unit}}</text>
+    <text class="unit" [attr.x]="center" [attr.y]="config.UNIT_Y">{{unit}}</text>
   </svg>
-  <svg #gauge [attr.viewBox]="viewBox" [attr.width]="Configuration.WIDTH" xmlns="http://www.w3.org/2000/svg">
-    <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="Configuration.ARC_STROKE" fill="none" />
+  <svg #gauge [attr.viewBox]="viewBox" [attr.width]="config.WIDTH" xmlns="http://www.w3.org/2000/svg">
+    <path class="main-arc" [attr.d]="arc" [attr.stroke-width]="config.ARC_STROKE" fill="none" />
     <path *ngFor="let arc of sectorArcs"
       [attr.d]="arc.path"
       [attr.stroke]="arc.color"
-      [attr.stroke-width]="Configuration.ARC_STROKE"
+      [attr.stroke-width]="config.ARC_STROKE"
       fill="none" />
     <line *ngFor="let line of scaleLines"
-      [attr.stroke-width]="Configuration.SL_WIDTH"
+      [attr.stroke-width]="config.SL_WIDTH"
       [attr.stroke]="line.color || (!lightTheme ? '#333' : '#fff')"
       [attr.x1]="line.from.x"
       [attr.y1]="line.from.y"
@@ -44,13 +44,13 @@
     </text>
     <rect #arrow
       class="arrow"
-      [attr.x]="center - Configuration.ARROW_WIDTH / 2"
-      [attr.y]="Configuration.ARROW_Y"
-      [attr.height]="center - Configuration.ARROW_Y"
-      [attr.width]="Configuration.ARROW_WIDTH"
-      [attr.rx]="Configuration.ARROW_WIDTH / 2"
-      [attr.ry]="Configuration.ARROW_WIDTH / 2">
+      [attr.x]="center - config.ARROW_WIDTH / 2"
+      [attr.y]="config.ARROW_Y"
+      [attr.height]="center - config.ARROW_Y"
+      [attr.width]="config.ARROW_WIDTH"
+      [attr.rx]="config.ARROW_WIDTH / 2"
+      [attr.ry]="config.ARROW_WIDTH / 2">
     </rect>
-    <circle class="arrow-pin" [attr.cx]="center" [attr.cy]="center" [attr.r]="Configuration.ARROW_PIN_RAD" />
+    <circle class="arrow-pin" [attr.cx]="center" [attr.cy]="center" [attr.r]="config.ARROW_PIN_RAD" />
   </svg>
 </section>

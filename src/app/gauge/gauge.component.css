@@ -8,7 +8,7 @@
 
 .ng-gauge {
   position: relative;
-  display: inline-block;
+  display: block;
 }
 
 .ng-gauge svg.info {

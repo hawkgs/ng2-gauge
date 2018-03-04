@@ -28,7 +28,6 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @Input() factor: number;
   @Input() config: GaugeConfig;
 
-  Configuration: GaugeConfig;
   viewBox: string;
   scaleLines: Line[];
   scaleValues: Value[];
@@ -64,19 +63,19 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   }
 
   ngOnInit(): void {
+    this.config = Object.assign(Config, this.config)
     if (!this.start) {
-      this.start = Config.DEF_START;
+      this.start = this.config.DEF_START;
     }
     if (!this.end) {
-      this.end = Config.DEF_END;
+      this.end = this.config.DEF_END;
     }
-    this.Configuration=Object.assign(Config,this.config);
     validate(this);
     
-    const width = this.Configuration.WIDTH + this.Configuration.ARC_STROKE;
+    const width = this.config.WIDTH + this.config.ARC_STROKE;
 
     this.viewBox = `0 0 ${width} ${width}`;
-    this.radius = this.Configuration.WIDTH / 2;
+    this.radius = this.config.WIDTH / 2;
     this.center = width / 2;
     this._end = this.end;
 
@@ -180,7 +179,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     if (separateAtAngle % 1 !== 0) {
       lineFrequency = separateAtAngle;
     } else {
-      lineFrequency = this.Configuration.INIT_LINE_FREQ * 2;
+      lineFrequency = this.config.INIT_LINE_FREQ * 2;
       for (lineFrequency; lineFrequency <= separateAtAngle; lineFrequency++) {
         if (separateAtAngle % lineFrequency === 0) {
           break;
@@ -216,22 +215,22 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     let placedVals = 0;
 
     for (let alpha = 0, i = 0; alpha >= (-1) * this._end; alpha -= accumWith, i++) {
-      let lineHeight = this.Configuration.SL_NORM;
+      let lineHeight = this.config.SL_NORM;
       const sepReached = this._isSeparatorReached(i, accumWith);
 
       // Set the line height based on its type
       switch (sepReached) {
         case Separator.Big:
           placedVals++;
-          lineHeight = this.Configuration.SL_SEP;
+          lineHeight = this.config.SL_SEP;
           break;
         case Separator.Small:
-          lineHeight = this.Configuration.SL_MID_SEP;
+          lineHeight = this.config.SL_MID_SEP;
           break;
       }
 
       // Draw the line
-      const higherEnd = this.center - this.Configuration.ARC_STROKE - 2;
+      const higherEnd = this.center - this.config.ARC_STROKE - 2;
       const lowerEnd = higherEnd - lineHeight;
 
       const alphaRad = Math.PI / 180 * (alpha + 180);
@@ -293,10 +292,10 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   private _addScaleValue(sin: number, cos: number, lowerEnd: number, alpha: number): void {
     let val = Math.round(alpha * (this.max / this._end)) * (-1);
-    let posMargin = this.Configuration.TXT_MARGIN * 2;
+    let posMargin = this.config.TXT_MARGIN * 2;
 
     // Use the multiplier instead of the real value, if above MAX_PURE_SCALE_VAL (i.e. 1000)
-    if (this.max > this.Configuration.MAX_PURE_SCALE_VAL) {
+    if (this.max > this.config.MAX_PURE_SCALE_VAL) {
       val /= this.scaleFactor;
       val = Math.round(val * 100) / 100;
       posMargin /= 2;
