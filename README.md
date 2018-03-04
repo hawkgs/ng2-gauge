@@ -14,9 +14,9 @@ Gauge component for Angular
   </tr>
 </table>
 
-![Build Status](https://travis-ci.org/hawkgs/ng2-gauge.svg?branch=master) v1.1.2
+![Build Status](https://travis-ci.org/hawkgs/ng2-gauge.svg?branch=master) v1.1.3
 
-## v1.1.2 Changelog
+## v1.1.3 Changelog
 
 - Fix support of the `config` input (@mehrjouei)
 - Fix arrow position (@mehrjouei)
