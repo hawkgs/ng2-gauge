@@ -48,7 +48,12 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @Input()
   set input(val: number) {
     this._input = val;
+    this.scaleLines = [];
+    this.scaleValues = [];
     this._updateArrowPos(val);
+    this._calculateSectors();
+    this.scaleFactor = this.factor || this._determineScaleFactor();
+    this._createScale();
   }
 
   get input(): number {
