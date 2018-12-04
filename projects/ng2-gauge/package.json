@@ -1,0 +1,27 @@
+{
+  "name": "ng2-gauge",
+  "version": "1.1.8",
+  "peerDependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/core": "^7.0.0"
+  },
+  "license": "MIT",
+  "author": "hawkgs (Georgi Serev)",
+  "keywords": [
+    "angular",
+    "angular2",
+    "angular 2",
+    "angular4",
+    "gauge",
+    "ng gauge",
+    "angular gauge"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hawkgs/ng2-gauge.git"
+  },
+  "homepage": "https://github.com/hawkgs/ng2-gauge",
+  "bugs": {
+    "url": "https://github.com/hawkgs/ng2-gauge/issues"
+  }
+}

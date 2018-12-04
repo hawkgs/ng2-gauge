@@ -18,9 +18,9 @@ Gauge component for Angular
 
 ## v1.1 Changelog
 
-- Fix support of the `config` input (@mehrjouei)
-- Fix arrow position (@mehrjouei)
-- Introduce dynamic `max` (@leticiafatimaa)
+- Fix support of the `config` input ([@mehrjouei](https://github.com/mehrjouei))
+- Fix arrow position ([@mehrjouei](https://github.com/mehrjouei))
+- Introduce dynamic `max` ([@leticiafatimaa](https://github.com/leticiafatimaa))
 - Introduce `size` property for changing the width/size
 
 ## Installation
@@ -51,10 +51,10 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-my-component',
   template: `
-    <ng-gauge
+    <nga-ng2-gauge
       [max]="9000"
       [input]="input"
-    </ng-gauge>`
+    </nga-ng2-gauge>`
 })
 export class MyComponent {
   input: number;

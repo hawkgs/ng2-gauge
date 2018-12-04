@@ -1,4 +1,4 @@
-import { GaugeProps, Sector } from './gauge.interface';
+import { GaugeProps, Sector } from './ng2-gauge.interface';
 
 const showError = (text: string) => {
   console.error(`GaugeComponent: ${text}`);

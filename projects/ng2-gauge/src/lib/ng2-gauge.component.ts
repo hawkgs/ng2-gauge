@@ -3,17 +3,17 @@ import {
   AfterViewInit, Renderer2, ElementRef, ViewEncapsulation
 } from '@angular/core';
 
-import { Sector, Line, Cartesian, RenderSector, Value, Separator, GaugeProps } from './shared/gauge.interface';
+import { Sector, Line, Cartesian, RenderSector, Value, Separator, GaugeProps } from './shared/ng2-gauge.interface';
 import { Config, GaugeConfig } from './shared/config';
 import { validate } from './shared/validators';
 
 @Component({
-  selector: 'ng-gauge',
-  templateUrl: './gauge.component.html',
-  styleUrls: ['./gauge.component.css'],
+  selector: 'nga-ng2-gauge',
+  templateUrl: './ng2-gauge.component.html',
+  styleUrls: ['./ng2-gauge.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
+export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @ViewChild('gauge') gauge: ElementRef;
   @ViewChild('arrow') arrow: ElementRef;
 
@@ -229,7 +229,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       return Separator.Small;
     }
     return Separator.NA;
-  };
+  }
 
   /**
    * Creates the scale.

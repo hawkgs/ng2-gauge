@@ -3,13 +3,13 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   template: `
-    <ng-gauge
+    <nga-ng2-gauge
       [max]="max"
       [unit]="'rpm'"
       [showDigital]="true"
       [sectors]="sectors"
       [input]="input">
-    </ng-gauge>`
+    </nga-ng2-gauge>`
 })
 export class AppComponent {
   max = 9000;
