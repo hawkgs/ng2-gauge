@@ -35,10 +35,10 @@ You should import the `GaugeModule` to your desired module:
 
 ```typescript
 import { NgModule } from '@angular/core';
-import { GaugeModule } from 'ng2-gauge';
+import { Ng2GaugeModule } from 'ng2-gauge';
 
 @NgModule({
-    imports : [CommonModule, GaugeModule, ...],
+    imports : [CommonModule, Ng2GaugeModule, ...],
 })
 export class SharedModule {}
 ```
