@@ -16,7 +16,7 @@ Gauge component for Angular
 
 ![Build Status](https://travis-ci.org/hawkgs/ng2-gauge.svg?branch=master)
 
-**v1.2.0**
+**v1.2.0** | [CHANGELOG](./CHANGELOG.md)
 
 ## Installation
 
