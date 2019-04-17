@@ -23,6 +23,9 @@
       ],
       "ng2-gauge/*": [
         "dist/ng2-gauge/*"
+      ],
+      "core-js/es7/reflect": [
+        "node_modules/core-js/proposals/reflect-metadata"
       ]
     }
   }
