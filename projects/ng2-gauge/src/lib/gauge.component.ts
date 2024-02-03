@@ -7,7 +7,6 @@ import {
   Renderer2,
   ElementRef,
   ViewEncapsulation,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import {
@@ -102,8 +101,8 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   @Input({ required: true })
   set input(val: number) {
-    this._input = val;
-    this._updateArrowPos(val);
+    this._input = Math.min(val, this._max);
+    this._updateArrowPos(this._input);
   }
 
   get input(): number {
