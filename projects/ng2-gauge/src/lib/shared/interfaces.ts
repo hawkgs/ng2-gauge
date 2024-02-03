@@ -1,18 +1,18 @@
 import { GaugeConfig } from './config';
 
-export interface Cartesian {
+export interface CartesianCoor {
   x: number;
   y: number;
 }
 
 export interface Line {
-  from: Cartesian;
-  to: Cartesian;
+  from: CartesianCoor;
+  to: CartesianCoor;
   color: string;
 }
 
 export interface Value {
-  coor: Cartesian;
+  coor: CartesianCoor;
   text: string;
 }
 
@@ -28,15 +28,14 @@ export interface RenderSector {
 }
 
 export interface GaugeProps {
-  start: number;
-  end: number;
+  arcStart: number;
+  arcEnd: number;
   max: number;
   sectors: Sector[];
   unit: string;
-  showDigital: boolean;
-  light: number;
-  lightTheme: boolean;
-  factor: number;
+  digitalDisplay: boolean;
+  activateRedLightAfter: number;
+  darkTheme: boolean;
   config: GaugeConfig;
 }
 

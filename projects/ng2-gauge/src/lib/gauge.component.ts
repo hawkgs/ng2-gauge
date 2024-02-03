@@ -7,12 +7,13 @@ import {
   Renderer2,
   ElementRef,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import {
   Sector,
   Line,
-  Cartesian,
+  CartesianCoor,
   RenderSector,
   Value,
   Separator,
@@ -20,6 +21,10 @@ import {
 } from './shared/interfaces';
 import { DefaultConfig, GaugeConfig } from './shared/config';
 import { validate } from './shared/validators';
+
+function copySectors(sectors: Sector[]): Sector[] {
+  return sectors.map((s) => ({ ...s }));
+}
 
 @Component({
   selector: 'ng2-gauge',
@@ -31,15 +36,49 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @ViewChild('gauge') gauge!: ElementRef;
   @ViewChild('arrow') arrow!: ElementRef;
 
+  /**
+   * Size/width of the gauge _in pixels_.
+   */
   @Input() size!: number;
-  @Input() start!: number;
-  @Input() end!: number;
+
+  /**
+   * The start/beginning of the scale arc _in degrees_. Default `225`
+   */
+  @Input() arcStart!: number;
+
+  /**
+   * The end of the scale arc _in degrees_. Default: `135`
+   */
+  @Input() arcEnd!: number;
+
+  /**
+   * Defines the coloring of specified sectors
+   */
   @Input() sectors!: Sector[];
+
+  /**
+   * The unit of the gauge (i.e. mph, psi, etc.)
+   */
   @Input() unit!: string;
-  @Input() showDigital!: boolean;
-  @Input() light!: number;
-  @Input() lightTheme!: boolean;
-  @Input() factor!: number;
+
+  /**
+   * Displays the current value as digital number inside the gauge
+   */
+  @Input() digitalDisplay!: boolean;
+
+  /**
+   * Shows a red light when the specified limit is reached
+   */
+  @Input() activateRedLightAfter!: number;
+
+  /**
+   * Enables the dark theme
+   */
+  @Input() darkTheme!: boolean;
+
+  /**
+   * _(Not recommended)_ Alters the default configuration; This may lead to unexpected behavior; [GaugeConfig](./src/app/gauge/shared/config.ts)
+   */
   @Input() config!: GaugeConfig;
 
   viewBox: string = '';
@@ -51,14 +90,17 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   center: number = 0;
   scaleFactor: number = 0;
 
-  private _end: number = 0;
+  private _arcEnd: number = 0;
   private _input: number = 0;
   private _max: number = 0;
   private _mappedSectors: Sector[] = [];
 
   constructor(private _renderer: Renderer2) {}
 
-  @Input()
+  /**
+   * The current value of the gauge
+   */
+  @Input({ required: true })
   set input(val: number) {
     this._input = val;
     this._updateArrowPos(val);
@@ -68,7 +110,10 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     return this._input;
   }
 
-  @Input()
+  /**
+   * The maximal value of the gauge. It is suggested to use a number that is divisible by 10^n (e.g. 100, 1000, etc.)
+   */
+  @Input({ required: true })
   set max(val: number) {
     if (this._max) {
       this._max = val;
@@ -82,21 +127,21 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   }
 
   get arc(): string {
-    return this._arc(0, this._end);
+    return this._arc(0, this._arcEnd);
   }
 
   get gaugeRotationAngle(): number {
-    return this._end - this.end;
+    return this._arcEnd - this.arcEnd;
   }
 
   ngOnInit(): void {
     this.config = { ...DefaultConfig, ...this.config };
 
-    if (!this.start) {
-      this.start = this.config.DEF_START;
+    if (!this.arcStart) {
+      this.arcStart = this.config.DEF_START;
     }
-    if (!this.end) {
-      this.end = this.config.DEF_END;
+    if (!this.arcEnd) {
+      this.arcEnd = this.config.DEF_END;
     }
 
     validate(this);
@@ -106,12 +151,12 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     this.viewBox = `0 0 ${width} ${width}`;
     this.radius = this.config.WIDTH / 2;
     this.center = width / 2;
-    this._end = this.end;
+    this._arcEnd = this.arcEnd;
 
-    if (this.start > this.end) {
-      this._end += 360 - this.start;
+    if (this.arcStart > this.arcEnd) {
+      this._arcEnd += 360 - this.arcStart;
     } else {
-      this._end -= this.start;
+      this._arcEnd -= this.arcStart;
     }
 
     this._initialize();
@@ -130,7 +175,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
 
     this._calculateSectors();
     this._updateArrowPos(this._input);
-    this.scaleFactor = this.factor || this._determineScaleFactor();
+    this.scaleFactor = this._determineScaleFactor();
     this._createScale();
   }
 
@@ -148,7 +193,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * Get angle coordinates (Cartesian coordinates).
    */
-  private _getAngleCoor(degrees: number): Cartesian {
+  private _getAngleCoor(degrees: number): CartesianCoor {
     const rads = ((degrees - 90) * Math.PI) / 180;
     return {
       x: this.radius * Math.cos(rads) + this.center,
@@ -164,19 +209,17 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       return;
     }
 
-    this._mappedSectors = JSON.parse(JSON.stringify(this.sectors));
+    this._mappedSectors = copySectors(this.sectors);
     this._mappedSectors.forEach((s: Sector) => {
-      const ratio = this._end / this.max;
+      const ratio = this._arcEnd / this.max;
       s.from *= ratio;
       s.to *= ratio;
     });
 
-    this.sectorArcs = this._mappedSectors.map((s: Sector) => {
-      return {
-        path: this._arc(s.from, s.to),
-        color: s.color,
-      };
-    });
+    this.sectorArcs = this._mappedSectors.map((s: Sector) => ({
+      path: this._arc(s.from, s.to),
+      color: s.color,
+    }));
   }
 
   /**
@@ -187,7 +230,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       return;
     }
 
-    const pos = (this._end / this.max) * input;
+    const pos = (this._arcEnd / this.max) * input;
     this._renderer.setStyle(
       this.arrow.nativeElement,
       'transform',
@@ -203,7 +246,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       return;
     }
 
-    const angle = 360 - this.start;
+    const angle = 360 - this.arcStart;
     this._renderer.setStyle(
       this.gauge.nativeElement,
       'transform',
@@ -227,7 +270,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   private _determineLineFrequency(): number {
     const separators = this.max / this.scaleFactor;
-    const separateAtAngle = this._end / separators;
+    const separateAtAngle = this._arcEnd / separators;
     let lineFrequency: number;
 
     // If separateAtAngle is not an integer, use its value as the line frequency.
@@ -250,7 +293,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   private _isSeparatorReached(idx: number, lineFrequency: number): Separator {
     const separators = this.max / this.scaleFactor;
-    const totalSeparators = this._end / lineFrequency;
+    const totalSeparators = this._arcEnd / lineFrequency;
     const separateAtIdx = totalSeparators / separators;
 
     if (idx % separateAtIdx === 0) {
@@ -271,7 +314,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
 
     for (
       let alpha = 0, i = 0;
-      alpha >= -1 * this._end;
+      alpha >= -1 * this._arcEnd;
       alpha -= accumWith, i++
     ) {
       let lineHeight = this.config.SL_NORM;
@@ -302,7 +345,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       // Put a scale value
       if (sepReached === Separator.Big) {
         const isValuePosEven = placedVals % 2 === 0;
-        const isLast = alpha <= -1 * this._end;
+        const isLast = alpha <= -1 * this._arcEnd;
 
         if (!(isAboveSuitableFactor && isValuePosEven && !isLast)) {
           this._addScaleValue(sin, cos, lowerEnd, alpha);
@@ -361,7 +404,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     lowerEnd: number,
     alpha: number,
   ): void {
-    let val = Math.round(alpha * (this.max / this._end)) * -1;
+    let val = Math.round(alpha * (this.max / this._arcEnd)) * -1;
     let posMargin = this.config.TXT_MARGIN * 2;
 
     // Use the multiplier instead of the real value, if above MAX_PURE_SCALE_VAL (i.e. 1000)

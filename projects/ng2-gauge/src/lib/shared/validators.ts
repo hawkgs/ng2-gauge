@@ -10,21 +10,21 @@ export const validate = (props: GaugeProps) => {
   }
 
   if (
-    !(0 <= props.start && props.start <= 359) ||
-    !(0 <= props.end && props.end <= 359)
+    !(0 <= props.arcStart && props.arcStart <= 359) ||
+    !(0 <= props.arcEnd && props.arcEnd <= 359)
   ) {
     showError('The end and start must be between 0 and 359 degrees.');
   }
 
-  if (props.light && props.light > props.max) {
+  if (props.activateRedLightAfter && props.activateRedLightAfter > props.max) {
     showError(
       'The red light trigger value cannot be greater than the max value of the gauge.',
     );
   }
 
-  if (props.factor && props.factor >= props.max) {
-    showError('The factor cannot be greater than or equal to the max value.');
-  }
+  // if (props.scaleFactor && props.scaleFactor >= props.max) {
+  //   showError('The factor cannot be greater than or equal to the max value.');
+  // }
 
   if (props.sectors) {
     props.sectors.forEach((s: Sector) => {

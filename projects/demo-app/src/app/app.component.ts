@@ -11,7 +11,7 @@ import { MockEngineObdService } from './mock-data-src.service';
   template: `<ng2-gauge
     unit="rpm"
     [max]="9000"
-    [showDigital]="true"
+    [digitalDisplay]="true"
     [input]="(obd.rpm$ | async) || 0"
     [sectors]="[{
       from: 6500,

@@ -1,13 +1,13 @@
 <section
   class="ng2-gauge"
-  [class.light]="lightTheme"
+  [class.light]="darkTheme"
   [style.width]="size + 'px'"
 >
   <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <circle
-      *ngIf="light"
+      *ngIf="activateRedLightAfter"
       class="red-light"
-      [class.on]="input >= light"
+      [class.on]="input >= activateRedLightAfter"
       [attr.cx]="center"
       [attr.cy]="config.LIGHT_Y"
       [attr.r]="config.LIGHT_RADIUS"
@@ -21,7 +21,7 @@
       x{{ scaleFactor }} {{ unit }}
     </text>
     <text
-      *ngIf="showDigital"
+      *ngIf="digitalDisplay"
       class="digital"
       [attr.x]="center"
       [attr.y]="config.DIGITAL_Y"
@@ -49,7 +49,7 @@
     <line
       *ngFor="let line of scaleLines"
       [attr.stroke-width]="config.SL_WIDTH"
-      [attr.stroke]="line.color || (!lightTheme ? '#333' : '#fff')"
+      [attr.stroke]="line.color || (!darkTheme ? '#333' : '#fff')"
       [attr.x1]="line.from.x"
       [attr.y1]="line.from.y"
       [attr.x2]="line.to.x"
