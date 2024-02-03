@@ -1,4 +1,8 @@
-<section class="gauge" [class.light]="lightTheme" [style.width]="size + 'px'">
+<section
+  class="ng2-gauge"
+  [class.light]="lightTheme"
+  [style.width]="size + 'px'"
+>
   <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
     <circle
       *ngIf="light"

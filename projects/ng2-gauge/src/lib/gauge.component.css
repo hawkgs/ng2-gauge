@@ -9,66 +9,66 @@
     U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
-.gauge {
+.ng2-gauge {
   position: relative;
   width: 400px; /* Default size, use @Input size for manipulation */
 }
 
-.gauge svg.info {
+.ng2-gauge svg.info {
   position: absolute;
   top: 0;
   left: 0;
 }
 
-.gauge rect.arrow {
+.ng2-gauge rect.arrow {
   transform-origin: 50% 50%;
   fill: orange;
 }
 
-.gauge text {
+.ng2-gauge text {
   font-family: 'Orbitron', sans-serif;
   font-weight: bold;
   text-anchor: middle;
   fill: #333;
 }
 
-.gauge.light text {
+.ng2-gauge.light text {
   fill: #fff;
 }
 
-.gauge text.text-val {
+.ng2-gauge text.text-val {
   font-size: 12px;
 }
 
-.gauge circle.arrow-pin {
+.ng2-gauge circle.arrow-pin {
   fill: #333;
 }
 
-.gauge path.main-arc {
+.ng2-gauge path.main-arc {
   stroke: #333;
 }
 
-.gauge.light path.main-arc {
+.ng2-gauge.light path.main-arc {
   stroke: #fff;
 }
 
-.gauge text.factor {
+.ng2-gauge text.factor {
   font-size: 7px;
 }
 
-.gauge text.digital {
+.ng2-gauge text.digital {
   font-size: 16px;
 }
 
-.gauge text.unit {
+.ng2-gauge text.unit {
   font-size: 10px;
 }
 
-.gauge circle.red-light {
+.ng2-gauge circle.red-light {
   fill: #ff4f4f;
   opacity: 0.1;
 }
 
-.gauge circle.red-light.on {
+.ng2-gauge circle.red-light.on {
   opacity: 1;
 }

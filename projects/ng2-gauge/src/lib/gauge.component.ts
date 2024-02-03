@@ -17,8 +17,8 @@ import {
   Value,
   Separator,
   GaugeProps,
-} from './shared/ng2-gauge.interface';
-import { Config, GaugeConfig } from './shared/config';
+} from './shared/interfaces';
+import { DefaultConfig, GaugeConfig } from './shared/config';
 import { validate } from './shared/validators';
 
 @Component({
@@ -42,19 +42,19 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @Input() factor!: number;
   @Input() config!: GaugeConfig;
 
-  viewBox!: string;
-  scaleLines!: Line[];
-  scaleValues!: Value[];
-  sectorArcs!: RenderSector[];
+  viewBox: string = '';
+  scaleLines: Line[] = [];
+  scaleValues: Value[] = [];
+  sectorArcs: RenderSector[] = [];
 
-  radius!: number;
-  center!: number;
-  scaleFactor!: number;
+  radius: number = 0;
+  center: number = 0;
+  scaleFactor: number = 0;
 
-  private _end!: number;
-  private _input!: number;
-  private _max!: number;
-  private _mappedSectors!: Sector[];
+  private _end: number = 0;
+  private _input: number = 0;
+  private _max: number = 0;
+  private _mappedSectors: Sector[] = [];
 
   constructor(private _renderer: Renderer2) {}
 
@@ -90,7 +90,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   }
 
   ngOnInit(): void {
-    this.config = Object.assign(Config, this.config);
+    this.config = { ...DefaultConfig, ...this.config };
 
     if (!this.start) {
       this.start = this.config.DEF_START;
@@ -183,6 +183,10 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    * Update the position of the arrow based on the input.
    */
   private _updateArrowPos(input: number): void {
+    if (!this.arrow) {
+      return;
+    }
+
     const pos = (this._end / this.max) * input;
     this._renderer.setStyle(
       this.arrow.nativeElement,
@@ -195,6 +199,10 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    * Rotate the gauge based on the start property. The CSS rotation, saves additional calculations with SVG.
    */
   private _rotateGauge(): void {
+    if (!this.gauge) {
+      return;
+    }
+
     const angle = 360 - this.start;
     this._renderer.setStyle(
       this.gauge.nativeElement,
@@ -310,7 +318,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     alpha *= -1;
     let color = '';
 
-    if (this._mappedSectors) {
+    if (this._mappedSectors.length) {
       this._mappedSectors.forEach((s: Sector) => {
         if (s.from <= alpha && alpha <= s.to) {
           color = s.color;

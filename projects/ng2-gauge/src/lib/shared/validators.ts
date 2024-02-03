@@ -1,4 +1,4 @@
-import { GaugeProps, Sector } from './ng2-gauge.interface';
+import { GaugeProps, Sector } from './interfaces';
 
 const showError = (text: string) => {
   console.error(`GaugeComponent: ${text}`);
@@ -9,12 +9,17 @@ export const validate = (props: GaugeProps) => {
     showError('The maximal value is not set.');
   }
 
-  if (!(0 <= props.start && props.start <= 359) || !(0 <= props.end && props.end <= 359)) {
+  if (
+    !(0 <= props.start && props.start <= 359) ||
+    !(0 <= props.end && props.end <= 359)
+  ) {
     showError('The end and start must be between 0 and 359 degrees.');
   }
 
   if (props.light && props.light > props.max) {
-    showError('The red light trigger value cannot be greater than the max value of the gauge.');
+    showError(
+      'The red light trigger value cannot be greater than the max value of the gauge.',
+    );
   }
 
   if (props.factor && props.factor >= props.max) {
@@ -28,7 +33,9 @@ export const validate = (props: GaugeProps) => {
       }
 
       if (s.from >= s.to) {
-        showError('The lower bound of the sector cannot be greater than or equal to the upper one.');
+        showError(
+          'The lower bound of the sector cannot be greater than or equal to the upper one.',
+        );
       }
 
       if (!s.color) {

@@ -20,7 +20,7 @@ export interface GaugeConfig {
   DEF_END: number; // Default end angle (Use the input property in order to change)
 }
 
-export const Config: GaugeConfig = {
+export const DefaultConfig: GaugeConfig = {
   WIDTH: 200,
   ARC_STROKE: 5,
   ARROW_Y: 22.5,
