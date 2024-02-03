@@ -6,9 +6,10 @@
 - Improved validation
 - Changed component input names to better and more descriptive ones (see **Breaking changes**)
 - `max` and `value` are now required
-- Fixes issue #5
+- Fixed issue #5
 - Other smaller improvements
 - Project upgraded to Angular 17
+- Integrated with GitHub Actions
 
 ### Breaking changes
 
