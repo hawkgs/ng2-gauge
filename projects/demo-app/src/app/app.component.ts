@@ -12,7 +12,7 @@ import { MockEngineObdService } from './mock-data-src.service';
     unit="rpm"
     [max]="9000"
     [digitalDisplay]="true"
-    [input]="(obd.rpm$ | async) || 0"
+    [value]="(obd.rpm$ | async) || 0"
     [sectors]="[{
       from: 6500,
       to: 8000,

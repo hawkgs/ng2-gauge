@@ -7,7 +7,7 @@
     <circle
       *ngIf="activateRedLightAfter"
       class="red-light"
-      [class.on]="input >= activateRedLightAfter"
+      [class.on]="value >= activateRedLightAfter"
       [attr.cx]="center"
       [attr.cy]="config.LIGHT_Y"
       [attr.r]="config.LIGHT_RADIUS"
@@ -26,7 +26,7 @@
       [attr.x]="center"
       [attr.y]="config.DIGITAL_Y"
     >
-      {{ input }}
+      {{ value }}
     </text>
     <text class="unit" [attr.x]="center" [attr.y]="config.UNIT_Y">
       {{ unit }}

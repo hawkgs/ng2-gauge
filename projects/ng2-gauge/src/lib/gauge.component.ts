@@ -90,7 +90,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   scaleFactor: number = 0;
 
   private _arcEnd: number = 0;
-  private _input: number = 0;
+  private _value: number = 0;
   private _max: number = 0;
   private _mappedSectors: Sector[] = [];
 
@@ -100,13 +100,13 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    * The current value of the gauge
    */
   @Input({ required: true })
-  set input(val: number) {
-    this._input = Math.min(val, this._max);
-    this._updateArrowPos(this._input);
+  set value(val: number) {
+    this._value = Math.min(val, this._max);
+    this._updateArrowPos(this._value);
   }
 
-  get input(): number {
-    return this._input;
+  get value(): number {
+    return this._value;
   }
 
   /**
@@ -173,7 +173,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     this.scaleValues = [];
 
     this._calculateSectors();
-    this._updateArrowPos(this._input);
+    this._updateArrowPos(this._value);
     this.scaleFactor = this._determineScaleFactor();
     this._createScale();
   }
@@ -222,14 +222,14 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   }
 
   /**
-   * Update the position of the arrow based on the input.
+   * Update the position of the arrow based on the current value.
    */
-  private _updateArrowPos(input: number): void {
+  private _updateArrowPos(value: number): void {
     if (!this.arrow) {
       return;
     }
 
-    const pos = (this._arcEnd / this.max) * input;
+    const pos = (this._arcEnd / this.max) * value;
     this._renderer.setStyle(
       this.arrow.nativeElement,
       'transform',
