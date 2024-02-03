@@ -9,12 +9,10 @@
   "author": "hawkgs (Georgi Serev)",
   "keywords": [
     "angular",
-    "angular2",
-    "angular 2",
-    "angular4",
     "gauge",
     "ng gauge",
-    "angular gauge"
+    "angular gauge",
+    "analog gauge"
   ],
   "repository": {
     "type": "git",
