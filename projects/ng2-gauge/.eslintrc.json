@@ -29,7 +29,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "ngx",
+            "prefix": "ng2",
             "style": "kebab-case"
           }
         ],
@@ -37,7 +37,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "ngx",
+            "prefix": "ng2",
             "style": "camelCase"
           }
         ],

@@ -22,9 +22,9 @@
     "ng": "ng",
     "start": "ng serve demo-app",
     "build": "ng build ng2-gauge",
-    "watch:ng2-gauge": "ng run ngx-draw:build --watch",
+    "watch:ng2-gauge": "ng build ng2-gauge --watch",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint ng2-gauge"
   },
   "private": true,
   "dependencies": {
@@ -39,11 +39,16 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.1.2",
+    "@angular-eslint/builder": "17.2.1",
+    "@angular-eslint/eslint-plugin": "17.2.1",
+    "@angular-eslint/eslint-plugin-template": "17.2.1",
+    "@angular-eslint/schematics": "17.2.1",
+    "@angular-eslint/template-parser": "17.2.1",
     "@angular/cli": "^17.0.7",
     "@angular/compiler-cli": "^17.0.0",
     "@types/jasmine": "~5.1.0",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
+    "@typescript-eslint/eslint-plugin": "6.19.0",
+    "@typescript-eslint/parser": "6.19.0",
     "eslint": "^8.56.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",

@@ -25,14 +25,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/ng2-gauge/tsconfig.lib.json",
-              "projects/ng2-gauge/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/ng2-gauge/src/lib/**/*.ts",
+              "projects/ng2-gauge/src/lib/**/*.html"
             ]
           }
         }
@@ -128,6 +125,7 @@
     }
   },
   "cli": {
-    "analytics": "862d5b41-2e89-444c-8fd6-cd0883605a22"
+    "analytics": "862d5b41-2e89-444c-8fd6-cd0883605a22",
+    "schematicCollections": ["@angular-eslint/schematics"]
   }
 }

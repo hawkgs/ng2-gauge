@@ -7,8 +7,8 @@ import { GaugeModule } from 'ng2-gauge';
   standalone: true,
   imports: [CommonModule, GaugeModule],
   template: `<ng2-gauge
+    unit="rpm"
     [max]="max"
-    [unit]="'rpm'"
     [showDigital]="true"
     [sectors]="sectors"
     [input]="input"
