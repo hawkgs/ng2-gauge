@@ -1,19 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Ng2GaugeModule } from 'ng2-gauge';
+import { GaugeModule } from 'ng2-gauge';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, Ng2GaugeModule],
-  template: ` <nga-ng2-gauge
+  imports: [CommonModule, GaugeModule],
+  template: `<ng2-gauge
     [max]="max"
     [unit]="'rpm'"
     [showDigital]="true"
     [sectors]="sectors"
     [input]="input"
-  >
-  </nga-ng2-gauge>`,
+  ></ng2-gauge>`,
 })
 export class AppComponent {
   max = 9000;

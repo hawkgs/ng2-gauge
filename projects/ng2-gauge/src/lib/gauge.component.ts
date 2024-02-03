@@ -22,12 +22,12 @@ import { Config, GaugeConfig } from './shared/config';
 import { validate } from './shared/validators';
 
 @Component({
-  selector: 'nga-ng2-gauge',
-  templateUrl: './ng2-gauge.component.html',
-  styleUrls: ['./ng2-gauge.component.css'],
+  selector: 'ng2-gauge',
+  templateUrl: './gauge.component.html',
+  styleUrl: './gauge.component.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
+export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @ViewChild('gauge') gauge!: ElementRef;
   @ViewChild('arrow') arrow!: ElementRef;
 

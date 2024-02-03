@@ -7,7 +7,7 @@
       "root": "projects/ng2-gauge",
       "sourceRoot": "projects/ng2-gauge/src",
       "projectType": "library",
-      "prefix": "nga",
+      "prefix": "ng2",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
