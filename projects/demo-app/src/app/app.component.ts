@@ -1,49 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GaugeModule } from 'ng2-gauge';
+import { MockEngineObdService } from './mock-data-src.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, GaugeModule],
+  providers: [MockEngineObdService],
   template: `<ng2-gauge
     unit="rpm"
-    [max]="max"
+    [max]="9000"
     [showDigital]="true"
-    [sectors]="sectors"
-    [input]="input"
-  ></ng2-gauge>`,
-})
-export class AppComponent {
-  max = 9000;
-  input!: number;
-  sectors = [
-    {
+    [input]="(obd.rpm$ | async) || 0"
+    [sectors]="[{
       from: 6500,
       to: 8000,
       color: 'orange',
-    },
-    {
+    }, {
       from: 8000,
       to: 9000,
       color: 'red',
-    },
-  ];
+    }]"
+  ></ng2-gauge>`,
+})
+export class AppComponent implements OnInit {
+  constructor(public obd: MockEngineObdService) {}
 
-  constructor() {
-    const target = 5600;
-    const simulate = () => {
-      for (let i = 0, t = 0; i < target; i += 15, t++) {
-        setTimeout(() => {
-          this.input = i;
-        }, t * 0.5);
-      }
-    };
-
-    simulate();
-
-    // setTimeout(() => {
-    //   this.max = 15000;
-    // }, 5000);
+  ngOnInit() {
+    this.obd.connect();
   }
 }
