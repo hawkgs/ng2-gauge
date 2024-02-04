@@ -33,7 +33,7 @@ function copySectors(sectors: Sector[]): Sector[] {
 })
 export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   @ViewChild('gauge') gauge!: ElementRef;
-  @ViewChild('arrow') arrow!: ElementRef;
+  @ViewChild('arrow', { static: true }) arrow!: ElementRef;
 
   /**
    * Size/width of the gauge _in pixels_.
@@ -227,10 +227,6 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    * Update the position of the arrow based on the current value.
    */
   private _updateArrowPos(value: number): void {
-    if (!this.arrow) {
-      return;
-    }
-
     const pos = (this._arcEnd / this.max) * value;
     this._renderer.setStyle(
       this.arrow.nativeElement,
@@ -243,10 +239,6 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    * Rotate the gauge based on the start property. The CSS rotation, saves additional calculations with SVG.
    */
   private _rotateGauge(): void {
-    if (!this.gauge) {
-      return;
-    }
-
     const angle = 360 - this.arcStart;
     this._renderer.setStyle(
       this.gauge.nativeElement,

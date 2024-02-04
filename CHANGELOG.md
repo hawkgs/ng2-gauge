@@ -1,8 +1,14 @@
+## v1.3.2 (Feb 2023)
+
+### Fixes and/or improvements
+
+- Added support for a static `value`
+
 ## v1.3.1 (Feb 2023)
 
 ### Fixes and/or improvements
 
-- Fix peer dependencies issues
+- Fixed peer dependencies issues
 
 ## v1.3.0 (Feb 2023)
 
