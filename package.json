@@ -21,7 +21,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve demo-app",
-    "build": "ng build ng2-gauge",
+    "build": "ng build ng2-gauge && ts-node ./scripts/copy-readme.ts",
     "watch:ng2-gauge": "ng build ng2-gauge --watch",
     "test": "ng test",
     "lint": "ng lint ng2-gauge"
@@ -57,6 +57,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^17.1.2",
+    "ts-node": "^10.9.2",
     "typescript": "~5.2.2"
   }
 }

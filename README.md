@@ -5,10 +5,10 @@ SVG gauge component for Angular
 <table>
   <tr>
     <td>
-      <img src="./assets/gauge.png" alt="ng2-gauge" />
+      <img src="https://raw.githubusercontent.com/hawkgs/ng2-gauge/master/assets/gauge.png" alt="ng2-gauge" />
     </td>
     <td>
-      <img src="./assets/demo.gif" />
+      <img src="https://raw.githubusercontent.com/hawkgs/ng2-gauge/master/assets/demo.gif" />
       <p><em>Suitable for building virtual dashboards (initially designed for that).</em></p>
     </td>
   </tr>
