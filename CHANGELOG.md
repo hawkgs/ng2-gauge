@@ -1,3 +1,9 @@
+## v1.3.1 (Feb 2023)
+
+### Fixes and/or improvements
+
+- Fix peer dependencies issues
+
 ## v1.3.0 (Feb 2023)
 
 ### Fixes and/or improvements

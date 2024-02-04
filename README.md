@@ -14,7 +14,7 @@ SVG gauge component for Angular
   </tr>
 </table>
 
-**v1.3.0** | [CHANGELOG](./CHANGELOG.md)
+**v1.3.1** | [CHANGELOG](./CHANGELOG.md)
 
 ## Installation
 
