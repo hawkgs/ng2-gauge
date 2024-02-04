@@ -21,8 +21,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve demo-app",
-    "build": "ng build ng2-gauge && ts-node ./scripts/copy-readme.ts",
     "watch:ng2-gauge": "ng build ng2-gauge --watch",
+    "build": "ng build ng2-gauge && ts-node ./scripts/copy-readme.ts",
+    "prod-build": "ng build ng2-gauge --configuration=production && ts-node ./scripts/copy-readme.ts",
     "test": "ng test ng2-gauge",
     "test-ci": "ng test ng2-gauge --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint ng2-gauge"

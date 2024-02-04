@@ -12,8 +12,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/ng2-gauge/tsconfig.lib.json",
             "project": "projects/ng2-gauge/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng2-gauge/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ng2-gauge/tsconfig.lib.json"
+            }
           }
         },
         "test": {

@@ -28,6 +28,6 @@ jobs:
       - name: Lint ng2-gauge
         run: npm run lint
       - name: Build ng2-gauge
-        run: npm run build
+        run: npm run prod-build
       - name: Test ng2-gauge
         run: npm run test-ci
