@@ -1,4 +1,4 @@
-## v1.3.0 (Jan 2023)
+## v1.3.0 (Feb 2023)
 
 ### Fixes and/or improvements
 

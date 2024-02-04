@@ -30,4 +30,4 @@ jobs:
       - name: Build ng2-gauge
         run: npm run build
       - name: Test ng2-gauge
-        run: npm run test
+        run: npm run test-ci

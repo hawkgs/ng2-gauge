@@ -11,7 +11,11 @@ const error = (text: string, throwErr?: boolean) => {
 
 export const validate = (props: GaugeProps) => {
   if (!props.max) {
-    error('Missing "max" input property', true);
+    error('Missing "max" input property (or zero)', true);
+  }
+
+  if (props.max < 0) {
+    error('"max" input property cannot be negative.', true);
   }
 
   if (
@@ -36,7 +40,7 @@ export const validate = (props: GaugeProps) => {
 
   if (props.sectors) {
     props.sectors.forEach((s: Sector) => {
-      if (s.from < -1 || s.to < -1) {
+      if (s.from < 0 || s.to < 0) {
         error('The sector bounds cannot be negative.', true);
       }
 
@@ -49,10 +53,6 @@ export const validate = (props: GaugeProps) => {
           'The lower bound of the sector cannot be greater than or equal to the upper one.',
           true,
         );
-      }
-
-      if (!s.color) {
-        error(`Sector[${s.from}, ${s.to}] color is empty.`);
       }
     });
   }

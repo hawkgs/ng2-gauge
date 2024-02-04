@@ -117,6 +117,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   set max(val: number) {
     if (this._max) {
       this._max = val;
+      validate(this);
       this._initialize();
     }
     this._max = val;
