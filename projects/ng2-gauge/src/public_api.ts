@@ -2,5 +2,7 @@
  * Public API Surface of ng2-gauge
  */
 
-export * from './lib/ng2-gauge.component';
-export * from './lib/ng2-gauge.module';
+export { GaugeComponent } from './lib/gauge.component';
+export { GaugeModule } from './lib/gauge.module';
+export { Sector } from './lib/shared/interfaces';
+export { GaugeConfig } from './lib/shared/config';

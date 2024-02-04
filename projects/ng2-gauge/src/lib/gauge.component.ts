@@ -1,63 +1,123 @@
 import {
-  Component, Input, ViewChild, OnInit,
-  AfterViewInit, Renderer2, ElementRef, ViewEncapsulation
+  Component,
+  Input,
+  ViewChild,
+  OnInit,
+  AfterViewInit,
+  Renderer2,
+  ElementRef,
+  ViewEncapsulation,
 } from '@angular/core';
 
-import { Sector, Line, Cartesian, RenderSector, Value, Separator, GaugeProps } from './shared/ng2-gauge.interface';
-import { Config, GaugeConfig } from './shared/config';
+import {
+  Sector,
+  Line,
+  CartesianCoor,
+  RenderSector,
+  Value,
+  Separator,
+  GaugeProps,
+} from './shared/interfaces';
+import { DefaultConfig, GaugeConfig } from './shared/config';
 import { validate } from './shared/validators';
 
+function copySectors(sectors: Sector[]): Sector[] {
+  return sectors.map((s) => ({ ...s }));
+}
+
 @Component({
-  selector: 'nga-ng2-gauge',
-  templateUrl: './ng2-gauge.component.html',
-  styleUrls: ['./ng2-gauge.component.css'],
-  encapsulation: ViewEncapsulation.None
+  selector: 'ng2-gauge',
+  templateUrl: './gauge.component.html',
+  styleUrl: './gauge.component.css',
+  encapsulation: ViewEncapsulation.None,
 })
-export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
-  @ViewChild('gauge') gauge: ElementRef;
-  @ViewChild('arrow') arrow: ElementRef;
+export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
+  @ViewChild('gauge') gauge!: ElementRef;
+  @ViewChild('arrow') arrow!: ElementRef;
 
-  @Input() size: number;
-  @Input() start: number;
-  @Input() end: number;
-  @Input() sectors: Sector[];
-  @Input() unit: string;
-  @Input() showDigital: boolean;
-  @Input() light: number;
-  @Input() lightTheme: boolean;
-  @Input() factor: number;
-  @Input() config: GaugeConfig;
+  /**
+   * Size/width of the gauge _in pixels_.
+   */
+  @Input() size!: number;
 
-  viewBox: string;
-  scaleLines: Line[];
-  scaleValues: Value[];
-  sectorArcs: RenderSector[];
+  /**
+   * The start/beginning of the scale arc _in degrees_. Default `225`
+   */
+  @Input() arcStart!: number;
 
-  radius: number;
-  center: number;
-  scaleFactor: number;
+  /**
+   * The end of the scale arc _in degrees_. Default: `135`
+   */
+  @Input() arcEnd!: number;
 
-  private _end: number;
-  private _input: number;
-  private _max: number;
-  private _mappedSectors: Sector[];
+  /**
+   * Defines the coloring of specified sectors
+   */
+  @Input() sectors!: Sector[];
+
+  /**
+   * The unit of the gauge (i.e. mph, psi, etc.)
+   */
+  @Input() unit!: string;
+
+  /**
+   * Displays the current value as digital number inside the gauge
+   */
+  @Input() digitalDisplay!: boolean;
+
+  /**
+   * Shows a red light when the specified limit is reached
+   */
+  @Input() activateRedLightAfter!: number;
+
+  /**
+   * Enables the dark theme
+   */
+  @Input() darkTheme!: boolean;
+
+  /**
+   * _(Not recommended)_ Alters the default configuration; This may lead to unexpected behavior; [GaugeConfig](./src/app/gauge/shared/config.ts)
+   */
+  @Input() config!: GaugeConfig;
+
+  viewBox: string = '';
+  scaleLines: Line[] = [];
+  scaleValues: Value[] = [];
+  sectorArcs: RenderSector[] = [];
+
+  radius: number = 0;
+  center: number = 0;
+  scaleFactor: number = 0;
+
+  private _arcEnd: number = 0;
+  private _value: number = 0;
+  private _max: number = 0;
+  private _mappedSectors: Sector[] = [];
 
   constructor(private _renderer: Renderer2) {}
 
+  /**
+   * The current value of the gauge
+   */
   @Input()
-  set input(val: number) {
-    this._input = val;
-    this._updateArrowPos(val);
+  set value(val: number) {
+    this._value = Math.min(val, this._max);
+    this._updateArrowPos(this._value);
   }
 
-  get input(): number {
-    return this._input;
+  get value(): number {
+    return this._value;
   }
 
+  /**
+   * The maximal value of the gauge. It is suggested to use a number that is divisible by 10^n (e.g. 100, 1000, etc.)
+   */
+  // Note(Georgi): Don't use { require: true } since it's v16+ only
   @Input()
   set max(val: number) {
     if (this._max) {
       this._max = val;
+      validate(this);
       this._initialize();
     }
     this._max = val;
@@ -68,21 +128,21 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   }
 
   get arc(): string {
-    return this._arc(0, this._end);
+    return this._arc(0, this._arcEnd);
   }
 
   get gaugeRotationAngle(): number {
-    return this._end - this.end;
+    return this._arcEnd - this.arcEnd;
   }
 
   ngOnInit(): void {
-    this.config = Object.assign(Config, this.config);
+    this.config = { ...DefaultConfig, ...this.config };
 
-    if (!this.start) {
-      this.start = this.config.DEF_START;
+    if (!this.arcStart) {
+      this.arcStart = this.config.DEF_START;
     }
-    if (!this.end) {
-      this.end = this.config.DEF_END;
+    if (!this.arcEnd) {
+      this.arcEnd = this.config.DEF_END;
     }
 
     validate(this);
@@ -92,12 +152,12 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     this.viewBox = `0 0 ${width} ${width}`;
     this.radius = this.config.WIDTH / 2;
     this.center = width / 2;
-    this._end = this.end;
+    this._arcEnd = this.arcEnd;
 
-    if (this.start > this.end) {
-      this._end += (360 - this.start);
+    if (this.arcStart > this.arcEnd) {
+      this._arcEnd += 360 - this.arcStart;
     } else {
-      this._end -= this.start;
+      this._arcEnd -= this.arcStart;
     }
 
     this._initialize();
@@ -115,8 +175,8 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     this.scaleValues = [];
 
     this._calculateSectors();
-    this._updateArrowPos(this._input);
-    this.scaleFactor = this.factor || this._determineScaleFactor();
+    this._updateArrowPos(this._value);
+    this.scaleFactor = this._determineScaleFactor();
     this._createScale();
   }
 
@@ -134,11 +194,11 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * Get angle coordinates (Cartesian coordinates).
    */
-  private _getAngleCoor(degrees: number): Cartesian {
-    const rads = (degrees - 90) * Math.PI / 180;
+  private _getAngleCoor(degrees: number): CartesianCoor {
+    const rads = ((degrees - 90) * Math.PI) / 180;
     return {
-      x: (this.radius * Math.cos(rads)) + this.center,
-      y: (this.radius * Math.sin(rads)) + this.center
+      x: this.radius * Math.cos(rads) + this.center,
+      y: this.radius * Math.sin(rads) + this.center,
     };
   }
 
@@ -150,35 +210,49 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       return;
     }
 
-    this._mappedSectors = JSON.parse(JSON.stringify(this.sectors));
+    this._mappedSectors = copySectors(this.sectors);
     this._mappedSectors.forEach((s: Sector) => {
-      const ratio = this._end / this.max;
+      const ratio = this._arcEnd / this.max;
       s.from *= ratio;
       s.to *= ratio;
     });
 
-    this.sectorArcs = this._mappedSectors.map((s: Sector) => {
-      return {
-        path: this._arc(s.from, s.to),
-        color: s.color
-      };
-    });
+    this.sectorArcs = this._mappedSectors.map((s: Sector) => ({
+      path: this._arc(s.from, s.to),
+      color: s.color,
+    }));
   }
 
   /**
-   * Update the position of the arrow based on the input.
+   * Update the position of the arrow based on the current value.
    */
-  private _updateArrowPos(input: number): void {
-    const pos = (this._end / this.max) * input;
-    this._renderer.setStyle(this.arrow.nativeElement, 'transform', `rotate(${pos}deg)`);
+  private _updateArrowPos(value: number): void {
+    if (!this.arrow) {
+      return;
+    }
+
+    const pos = (this._arcEnd / this.max) * value;
+    this._renderer.setStyle(
+      this.arrow.nativeElement,
+      'transform',
+      `rotate(${pos}deg)`,
+    );
   }
 
   /**
    * Rotate the gauge based on the start property. The CSS rotation, saves additional calculations with SVG.
    */
   private _rotateGauge(): void {
-    const angle = 360 - this.start;
-    this._renderer.setStyle(this.gauge.nativeElement, 'transform', `rotate(-${angle}deg)`);
+    if (!this.gauge) {
+      return;
+    }
+
+    const angle = 360 - this.arcStart;
+    this._renderer.setStyle(
+      this.gauge.nativeElement,
+      'transform',
+      `rotate(-${angle}deg)`,
+    );
   }
 
   /**
@@ -197,7 +271,7 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   private _determineLineFrequency(): number {
     const separators = this.max / this.scaleFactor;
-    const separateAtAngle = this._end / separators;
+    const separateAtAngle = this._arcEnd / separators;
     let lineFrequency: number;
 
     // If separateAtAngle is not an integer, use its value as the line frequency.
@@ -220,7 +294,7 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    */
   private _isSeparatorReached(idx: number, lineFrequency: number): Separator {
     const separators = this.max / this.scaleFactor;
-    const totalSeparators = this._end / lineFrequency;
+    const totalSeparators = this._arcEnd / lineFrequency;
     const separateAtIdx = totalSeparators / separators;
 
     if (idx % separateAtIdx === 0) {
@@ -239,7 +313,11 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
     const isAboveSuitableFactor = this.max / this.scaleFactor > 10;
     let placedVals = 0;
 
-    for (let alpha = 0, i = 0; alpha >= (-1) * this._end; alpha -= accumWith, i++) {
+    for (
+      let alpha = 0, i = 0;
+      alpha >= -1 * this._arcEnd;
+      alpha -= accumWith, i++
+    ) {
       let lineHeight = this.config.SL_NORM;
       const sepReached = this._isSeparatorReached(i, accumWith);
 
@@ -258,7 +336,7 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       const higherEnd = this.center - this.config.ARC_STROKE - 2;
       const lowerEnd = higherEnd - lineHeight;
 
-      const alphaRad = Math.PI / 180 * (alpha + 180);
+      const alphaRad = (Math.PI / 180) * (alpha + 180);
       const sin = Math.sin(alphaRad);
       const cos = Math.cos(alphaRad);
       const color = this._getScaleLineColor(alpha);
@@ -268,7 +346,7 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       // Put a scale value
       if (sepReached === Separator.Big) {
         const isValuePosEven = placedVals % 2 === 0;
-        const isLast = alpha <= (-1) * this._end;
+        const isLast = alpha <= -1 * this._arcEnd;
 
         if (!(isAboveSuitableFactor && isValuePosEven && !isLast)) {
           this._addScaleValue(sin, cos, lowerEnd, alpha);
@@ -281,10 +359,10 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
    * Get the scale line color from the user-provided sectors definitions.
    */
   private _getScaleLineColor(alpha: number): string {
-    alpha *= (-1);
+    alpha *= -1;
     let color = '';
 
-    if (this._mappedSectors) {
+    if (this._mappedSectors.length) {
       this._mappedSectors.forEach((s: Sector) => {
         if (s.from <= alpha && alpha <= s.to) {
           color = s.color;
@@ -298,25 +376,36 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * Add a scale line to the list that will be later rendered.
    */
-  private _addScaleLine(sin: number, cos: number, higherEnd: number, lowerEnd: number, color: string): void {
+  private _addScaleLine(
+    sin: number,
+    cos: number,
+    higherEnd: number,
+    lowerEnd: number,
+    color: string,
+  ): void {
     this.scaleLines.push({
       from: {
         x: sin * higherEnd + this.center,
-        y: cos * higherEnd + this.center
+        y: cos * higherEnd + this.center,
       },
       to: {
         x: sin * lowerEnd + this.center,
-        y: cos * lowerEnd + this.center
+        y: cos * lowerEnd + this.center,
       },
-      color
+      color,
     });
   }
 
   /**
    * Add a scale value.
    */
-  private _addScaleValue(sin: number, cos: number, lowerEnd: number, alpha: number): void {
-    let val = Math.round(alpha * (this.max / this._end)) * (-1);
+  private _addScaleValue(
+    sin: number,
+    cos: number,
+    lowerEnd: number,
+    alpha: number,
+  ): void {
+    let val = Math.round(alpha * (this.max / this._arcEnd)) * -1;
     let posMargin = this.config.TXT_MARGIN * 2;
 
     // Use the multiplier instead of the real value, if above MAX_PURE_SCALE_VAL (i.e. 1000)
@@ -330,8 +419,8 @@ export class Ng2GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
       text: val.toString(),
       coor: {
         x: sin * (lowerEnd - posMargin) + this.center,
-        y: cos * (lowerEnd - posMargin) + this.center
-      }
+        y: cos * (lowerEnd - posMargin) + this.center,
+      },
     });
   }
 }

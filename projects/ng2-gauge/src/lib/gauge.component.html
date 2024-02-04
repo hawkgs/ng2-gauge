@@ -1,0 +1,93 @@
+<section
+  class="ng2-gauge"
+  [class.light]="darkTheme"
+  [style.width]="size + 'px'"
+>
+  <svg class="info" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
+    <circle
+      *ngIf="activateRedLightAfter"
+      class="red-light"
+      [class.on]="value >= activateRedLightAfter"
+      [attr.cx]="center"
+      [attr.cy]="config.LIGHT_Y"
+      [attr.r]="config.LIGHT_RADIUS"
+    ></circle>
+    <text
+      *ngIf="max > config.MAX_PURE_SCALE_VAL"
+      class="factor"
+      [attr.x]="center"
+      [attr.y]="config.S_FAC_Y"
+    >
+      x{{ scaleFactor }} {{ unit }}
+    </text>
+    <text
+      *ngIf="digitalDisplay"
+      class="digital"
+      [attr.x]="center"
+      [attr.y]="config.DIGITAL_Y"
+    >
+      {{ value }}
+    </text>
+    <text class="unit" [attr.x]="center" [attr.y]="config.UNIT_Y">
+      {{ unit }}
+    </text>
+  </svg>
+  <svg #gauge [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg">
+    <path
+      class="main-arc"
+      [attr.d]="arc"
+      [attr.stroke-width]="config.ARC_STROKE"
+      fill="none"
+    />
+    <path
+      *ngFor="let arc of sectorArcs"
+      [attr.d]="arc.path"
+      [attr.stroke]="arc.color"
+      [attr.stroke-width]="config.ARC_STROKE"
+      fill="none"
+    />
+    <line
+      *ngFor="let line of scaleLines"
+      [attr.stroke-width]="config.SL_WIDTH"
+      [attr.stroke]="line.color || (!darkTheme ? '#333' : '#fff')"
+      [attr.x1]="line.from.x"
+      [attr.y1]="line.from.y"
+      [attr.x2]="line.to.x"
+      [attr.y2]="line.to.y"
+    />
+    <text
+      *ngFor="let val of scaleValues"
+      class="text-val"
+      dominant-baseline="central"
+      [attr.x]="val.coor.x"
+      [attr.y]="val.coor.y"
+      [attr.transform]="
+        'rotate(' +
+        gaugeRotationAngle +
+        ', ' +
+        val.coor.x +
+        ', ' +
+        val.coor.y +
+        ')'
+      "
+    >
+      {{ val.text }}
+    </text>
+    <rect
+      #arrow
+      class="arrow"
+      [attr.x]="center - config.ARROW_WIDTH / 2"
+      [attr.y]="config.ARROW_Y"
+      [attr.height]="center - config.ARROW_Y"
+      [attr.width]="config.ARROW_WIDTH"
+      [attr.rx]="config.ARROW_WIDTH / 2"
+      [attr.ry]="config.ARROW_WIDTH / 2"
+    ></rect>
+    <circle
+      class="arrow-pin"
+      [attr.cx]="center"
+      [attr.cy]="center"
+      [attr.r]="config.ARROW_PIN_RAD"
+    />
+  </svg>
+</section>
