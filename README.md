@@ -57,7 +57,7 @@ export class MyComponent {
 The component provides a list of the following options:
 
 - **`max: number`** _(required)_ – The maximal value of the gauge. It is suggested to use a number that is divisible by 10^n (e.g. 100, 1000, etc.)
-- **`value: number`** _(required)_ – The current value of the gauge
+- **`value: number`** – The current value of the gauge
 - **`unit: string`** – The unit of the gauge (i.e. mph, psi, etc.)
 - **`size: number`** – Size/width of the gauge _in pixels_
 - **`arcStart: number`** – The start/beginning of the scale arc _in degrees_. Default `225`

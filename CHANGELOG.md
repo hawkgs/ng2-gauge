@@ -5,7 +5,6 @@
 - Gauge input is now limited by the max value
 - Improved validation
 - Changed component input names to better and more descriptive ones (see **Breaking changes**)
-- `max` and `value` are now required
 - Fixed issue #5
 - Other smaller improvements
 - Project upgraded to Angular 17

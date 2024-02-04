@@ -99,7 +99,7 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * The current value of the gauge
    */
-  @Input({ required: true })
+  @Input()
   set value(val: number) {
     this._value = Math.min(val, this._max);
     this._updateArrowPos(this._value);
@@ -112,7 +112,8 @@ export class GaugeComponent implements OnInit, AfterViewInit, GaugeProps {
   /**
    * The maximal value of the gauge. It is suggested to use a number that is divisible by 10^n (e.g. 100, 1000, etc.)
    */
-  @Input({ required: true })
+  // Note(Georgi): Don't use { require: true } since it's v16+ only
+  @Input()
   set max(val: number) {
     if (this._max) {
       this._max = val;

@@ -10,6 +10,10 @@ const error = (text: string, throwErr?: boolean) => {
 };
 
 export const validate = (props: GaugeProps) => {
+  if (!props.max) {
+    error('Missing "max" input property', true);
+  }
+
   if (
     !(0 <= props.arcStart && props.arcStart <= 359) ||
     !(0 <= props.arcEnd && props.arcEnd <= 359)
