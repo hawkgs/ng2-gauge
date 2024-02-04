@@ -24,7 +24,7 @@
     "build": "ng build ng2-gauge && ts-node ./scripts/copy-readme.ts",
     "watch:ng2-gauge": "ng build ng2-gauge --watch",
     "test": "ng test ng2-gauge",
-    "test-ci": "ng test ng2-gauge --no-watch",
+    "test-ci": "ng test ng2-gauge --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint ng2-gauge"
   },
   "private": true,
