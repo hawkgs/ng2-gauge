@@ -3,7 +3,7 @@ name: 'ng2-gauge'
 on: push
 
 jobs:
-  lint-and-build:
+  lint-build-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,3 +29,5 @@ jobs:
         run: npm run lint
       - name: Build ng2-gauge
         run: npm run build
+      - name: Test ng2-gauge
+        run: npm run test

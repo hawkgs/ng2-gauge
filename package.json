@@ -1,6 +1,6 @@
 {
   "name": "ng2-gauge",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "license": "MIT",
   "author": "hawkgs (Georgi Serev)",
   "keywords": [
@@ -23,7 +23,7 @@
     "start": "ng serve demo-app",
     "build": "ng build ng2-gauge && ts-node ./scripts/copy-readme.ts",
     "watch:ng2-gauge": "ng build ng2-gauge --watch",
-    "test": "ng test",
+    "test": "ng test ng2-gauge",
     "lint": "ng lint ng2-gauge"
   },
   "private": true,

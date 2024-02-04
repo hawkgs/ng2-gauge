@@ -19,9 +19,11 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ng2-gauge/src/test.ts",
             "tsConfig": "projects/ng2-gauge/tsconfig.spec.json",
-            "karmaConfig": "projects/ng2-gauge/karma.conf.js"
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
           }
         },
         "lint": {
